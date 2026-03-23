@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -20,6 +20,15 @@ export default function Hero() {
   const [loaded, setLoaded] = useState(false);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameRef = useRef(0);
+  const gsapCtxRef = useRef<gsap.Context | null>(null);
+
+  // Synchronous cleanup: revert GSAP pin BEFORE React removes DOM nodes
+  useLayoutEffect(() => {
+    return () => {
+      gsapCtxRef.current?.revert();
+      gsapCtxRef.current = null;
+    };
+  }, []);
 
   // Preload frames 1-96
   useEffect(() => {
@@ -62,7 +71,7 @@ export default function Hero() {
 
     drawFrame(0);
 
-    const gsapCtx = gsap.context(() => {
+    const gsapCtx = gsapCtxRef.current = gsap.context(() => {
       ScrollTrigger.create({
         trigger: wrapperRef.current,
         start: "top top",
