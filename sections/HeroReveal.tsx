@@ -109,12 +109,12 @@ export default function HeroReveal() {
             style={{ opacity: vigilOpacity, scale: vigilScale }}
             className="mb-10"
           >
-            <div className="h-[70px] md:h-[110px] flex items-center justify-center">
+            <div className="h-[90px] md:h-[140px] flex items-center justify-center">
               <GooeyText
                 texts={["MEET", "VIGIL"]}
                 morphTime={1.2}
                 cooldownTime={0.5}
-                className="h-[70px] md:h-[110px]"
+                className="h-[90px] md:h-[140px]"
               />
             </div>
           </motion.div>
