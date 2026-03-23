@@ -34,18 +34,22 @@ export default function HeartRateChart() {
     }
   }, [isInView])
 
+  useEffect(() => {
+    const el = containerRef.current?.querySelector('.hr-line') as SVGPathElement | null
+    if (!el) return
+    el.style.strokeDasharray = '2000'
+    el.style.strokeDashoffset = '2000'
+    el.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1)'
+  }, [])
+
+  useEffect(() => {
+    const el = containerRef.current?.querySelector('.hr-line') as SVGPathElement | null
+    if (!el) return
+    el.style.strokeDashoffset = animated ? '0' : '2000'
+  }, [animated])
+
   return (
     <div ref={containerRef} className="relative">
-      <style>{`
-        .hr-line {
-          stroke-dasharray: 2000;
-          stroke-dashoffset: 2000;
-          transition: stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .hr-line.hr-drawn {
-          stroke-dashoffset: 0;
-        }
-      `}</style>
       <ResponsiveContainer width="100%" height={150}>
         <LineChart data={data}>
           <XAxis hide />
