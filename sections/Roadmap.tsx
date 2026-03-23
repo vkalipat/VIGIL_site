@@ -1,157 +1,368 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+  MotionValue,
+} from "framer-motion";
+import dynamic from "next/dynamic";
+import type { MarkerData } from "@/components/GlobePulse";
+
+const GlobePulse = dynamic(
+  () => import("@/components/GlobePulse").then((m) => m.GlobePulse),
+  { ssr: false, loading: () => <div className="aspect-square" /> }
+);
+
+// ─── Phase Data ──────────────────────────────────────────────────────
 
 const phases = [
   {
     phase: "01",
     title: "Clinical Validation",
     timeline: "Q4 2025 – Q3 2026",
+    beds: 10,
+    label: "10 beds · 1 ward · 2 hospitals",
+    cost: "$460",
     description:
-      "Clinical pilot deployments at Emory University and Augusta University hospitals to validate accuracy, workflow integration, and early-deterioration detection on general wards.",
-    status: "active",
+      "Pilot deployments at Emory University and Augusta University hospitals.",
+    status: "active" as const,
   },
   {
     phase: "02",
     title: "Institutional Adoption",
     timeline: "Q4 2026 – Q1 2027",
+    beds: 40,
+    label: "40 beds · full ward",
+    cost: "$1,840",
     description:
-      "Successful pilots convert into paid deployments across U.S. community hospitals and NGO-supported LMIC hospitals using tiered pricing, starter kits, and centralized dashboards.",
-    status: "upcoming",
+      "Paid deployments across U.S. community hospitals and LMIC facilities.",
+    status: "upcoming" as const,
   },
   {
     phase: "03",
     title: "Scaled Distribution",
     timeline: "Q2 – Q4 2027",
+    beds: 120,
+    label: "120 beds · 3 wards",
+    cost: "$5,520",
     description:
-      "Expansion through bulk procurement contracts with hospital systems, NGOs, and Ministries of Health, leveraging PATH, UNICEF, and MSF networks for multi-ward and multi-country rollouts.",
-    status: "upcoming",
+      "Bulk procurement via hospital systems, NGOs, and Ministries of Health.",
+    status: "upcoming" as const,
   },
   {
     phase: "04",
     title: "Platform Expansion",
-    timeline: "2028 and beyond",
+    timeline: "2028+",
+    beds: 200,
+    label: "200+ beds · system-wide",
+    cost: "<$9,200",
     description:
-      "Following FDA Class II / 510(k) clearance, VIGIL scales nationally and globally through recurring software subscriptions, AI analytics, and system-wide deployments.",
-    status: "upcoming",
+      "Post-510(k) national scale with AI analytics and software subscriptions.",
+    status: "upcoming" as const,
   },
 ];
+
+// ─── Globe Markers ───────────────────────────────────────────────────
+
+const GLOBE_MARKERS: MarkerData[] = [
+  // Phase 0 — Georgia pilot
+  { id: "emory", location: [33.79, -84.39], phase: 0, delay: 0 },
+  { id: "augusta", location: [33.47, -81.97], phase: 0, delay: 0.4 },
+  // Phase 1 — US community hospitals
+  { id: "houston", location: [29.76, -95.37], phase: 1, delay: 0 },
+  { id: "chicago", location: [41.88, -87.63], phase: 1, delay: 0.25 },
+  { id: "phoenix", location: [33.45, -112.07], phase: 1, delay: 0.5 },
+  { id: "nashville", location: [36.16, -86.78], phase: 1, delay: 0.75 },
+  { id: "denver", location: [39.74, -104.99], phase: 1, delay: 1.0 },
+  { id: "boston", location: [42.36, -71.06], phase: 1, delay: 1.25 },
+  // Phase 2 — Worldwide + LMIC
+  { id: "london", location: [51.51, -0.13], phase: 2, delay: 0 },
+  { id: "nairobi", location: [-1.29, 36.82], phase: 2, delay: 0.2 },
+  { id: "mumbai", location: [19.08, 72.88], phase: 2, delay: 0.4 },
+  { id: "lagos", location: [6.52, 3.38], phase: 2, delay: 0.6 },
+  { id: "sao-paulo", location: [-23.55, -46.63], phase: 2, delay: 0.8 },
+  { id: "johannesburg", location: [-26.2, 28.05], phase: 2, delay: 1.0 },
+  { id: "manila", location: [14.6, 120.98], phase: 2, delay: 1.2 },
+  { id: "dhaka", location: [23.81, 90.41], phase: 2, delay: 1.4 },
+  // Phase 3 — Global scale
+  { id: "tokyo", location: [35.68, 139.65], phase: 3, delay: 0 },
+  { id: "sydney", location: [-33.87, 151.21], phase: 3, delay: 0.2 },
+  { id: "berlin", location: [52.52, 13.41], phase: 3, delay: 0.4 },
+  { id: "cairo", location: [30.04, 31.24], phase: 3, delay: 0.6 },
+  { id: "mexico-city", location: [19.43, -99.13], phase: 3, delay: 0.8 },
+  { id: "singapore", location: [1.35, 103.82], phase: 3, delay: 1.0 },
+  { id: "lima", location: [-12.05, -77.04], phase: 3, delay: 1.2 },
+  { id: "kampala", location: [0.35, 32.58], phase: 3, delay: 1.4 },
+];
+
+// ─── Main Component ──────────────────────────────────────────────────
 
 export default function Roadmap() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end end"],
   });
 
-  // The connecting line grows as you scroll
-  const lineScaleY = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
+  const bedCount = useTransform(
+    scrollYProgress,
+    [0, 0.18, 0.28, 0.43, 0.53, 0.68, 0.78, 1.0],
+    [10, 10, 40, 40, 120, 120, 200, 200]
+  );
+  const displayCount = useTransform(bedCount, (v) => Math.round(v));
+
+  const [activePhase, setActivePhase] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const p = v < 0.25 ? 0 : v < 0.5 ? 1 : v < 0.75 ? 2 : 3;
+    if (p !== activePhase) setActivePhase(p);
+  });
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-24 md:py-32 px-6 bg-[#0A0A0F]">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-20"
-        >
-          <p className="font-mono text-xs tracking-[0.2em] text-zinc-600 uppercase mb-4">
-            Roadmap
-          </p>
-          <h2 className="text-3xl md:text-5xl font-bold leading-[1.15] tracking-tight text-[#FAFAFA]">
-            From pilot to platform
-          </h2>
-        </motion.div>
-
-        {/* Timeline */}
-        <div className="relative">
-          {/* Vertical connecting line — desktop */}
-          <div className="hidden md:block absolute left-[calc(50%-1px)] top-0 bottom-0 w-[2px] bg-white/[0.06]">
-            <motion.div
-              style={{ scaleY: lineScaleY, transformOrigin: "top" }}
-              className="w-full h-full bg-gradient-to-b from-[#00D4AA] to-[#00D4AA]/20"
-            />
+    <section ref={sectionRef} className="relative h-[300vh]">
+      <div className="sticky top-0 h-screen bg-[#0A0A0F] overflow-hidden">
+        <div className="h-full flex flex-col justify-between px-6 py-10 md:py-14">
+          {/* Section label */}
+          <div className="max-w-6xl mx-auto w-full shrink-0">
+            <p className="font-mono text-xs tracking-[0.2em] text-zinc-600 uppercase">
+              Roadmap
+            </p>
           </div>
 
-          {/* Mobile connecting line */}
-          <div className="md:hidden absolute left-6 top-0 bottom-0 w-[2px] bg-white/[0.06]">
-            <motion.div
-              style={{ scaleY: lineScaleY, transformOrigin: "top" }}
-              className="w-full h-full bg-gradient-to-b from-[#00D4AA] to-[#00D4AA]/20"
-            />
-          </div>
+          {/* Center content */}
+          <div className="max-w-6xl mx-auto w-full flex-1 flex items-center py-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 items-center">
+              {/* Left: counter + phase info */}
+              <div>
+                <h2 className="text-3xl md:text-5xl font-bold leading-[1.15] tracking-tight text-[#FAFAFA] mb-6 md:mb-8">
+                  From pilot to platform
+                </h2>
 
-          {phases.map((phase, i) => {
-            const isLeft = i % 2 === 0;
-
-            return (
-              <motion.div
-                key={phase.phase}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: i * 0.1,
-                }}
-                className={`relative flex items-start mb-16 last:mb-0 ${
-                  isLeft
-                    ? "md:flex-row"
-                    : "md:flex-row-reverse"
-                } flex-row`}
-              >
-                {/* Dot on the line */}
-                <div
-                  className={`absolute md:left-1/2 md:-translate-x-1/2 left-6 -translate-x-1/2 top-2 z-10 w-4 h-4 rounded-full border-2 ${
-                    phase.status === "active"
-                      ? "border-[#00D4AA] bg-[#00D4AA] shadow-[0_0_12px_rgba(0,212,170,0.5)]"
-                      : "border-white/[0.2] bg-[#0A0A0F]"
-                  }`}
-                />
-
-                {/* Content card */}
-                <div
-                  className={`ml-12 md:ml-0 md:w-[calc(50%-40px)] ${
-                    isLeft ? "md:pr-0 md:mr-auto" : "md:pl-0 md:ml-auto"
-                  }`}
-                >
-                  <div className="group rounded-2xl bg-white/[0.03] border border-white/[0.08] p-6 md:p-8 hover:border-white/[0.15] transition-colors duration-500">
-                    {/* Phase number + status */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="font-mono text-xs tracking-[0.2em] text-[#00D4AA]">
-                        PHASE {phase.phase}
-                      </span>
-                      {phase.status === "active" && (
-                        <span className="flex items-center gap-1.5 text-[10px] font-medium tracking-wide text-[#00D4AA] uppercase bg-[#00D4AA]/10 px-2.5 py-1 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#00D4AA] animate-pulse" />
-                          Current
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-1">
-                      {phase.title}
-                    </h3>
-
-                    <p className="font-mono text-xs tracking-wide text-zinc-500 mb-4">
-                      {phase.timeline}
-                    </p>
-
-                    <p className="text-sm leading-relaxed text-zinc-400">
-                      {phase.description}
-                    </p>
-                  </div>
+                <div className="flex items-baseline mb-1">
+                  <motion.span className="text-[clamp(4rem,12vw,9rem)] font-bold tabular-nums tracking-tighter leading-none text-[#FAFAFA]">
+                    {displayCount}
+                  </motion.span>
+                  <span className="text-[clamp(1.2rem,3vw,2.5rem)] font-bold text-[#00D4AA]/20 ml-1 leading-none">
+                    +
+                  </span>
                 </div>
-              </motion.div>
-            );
-          })}
+                <p className="font-mono text-xs md:text-sm tracking-[0.15em] text-zinc-500 uppercase mb-6 md:mb-8">
+                  beds continuously monitored
+                </p>
+
+                <div className="relative h-40 md:h-36">
+                  {phases.map((phase, i) => (
+                    <PhaseDetail
+                      key={i}
+                      phase={phase}
+                      index={i}
+                      scrollYProgress={scrollYProgress}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Right: globe */}
+              <div className="hidden lg:block">
+                <GlobePulse
+                  markers={GLOBE_MARKERS}
+                  activePhase={activePhase}
+                  className="max-w-[440px] mx-auto"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom: progress + footnote */}
+          <div className="max-w-6xl mx-auto w-full shrink-0">
+            <ProgressTrack scrollYProgress={scrollYProgress} />
+            <p className="font-mono text-xs text-zinc-600 text-center mt-4">
+              A single bedside monitor costs $5,000–$15,000. VIGIL equips 200
+              beds for under $9,200.
+            </p>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+// ─── Phase Detail (crossfading) ──────────────────────────────────────
+
+function PhaseDetail({
+  phase,
+  index,
+  scrollYProgress,
+}: {
+  phase: (typeof phases)[number];
+  index: number;
+  scrollYProgress: MotionValue<number>;
+}) {
+  const start = index * 0.25;
+  const end = (index + 1) * 0.25;
+  const fade = 0.04;
+
+  const opacityInput =
+    index === 0
+      ? [start, end - fade, end + 0.01]
+      : index === phases.length - 1
+        ? [start - 0.01, start + fade, 1]
+        : [start - 0.01, start + fade, end - fade, end + 0.01];
+
+  const opacityOutput =
+    index === 0
+      ? [1, 1, 0]
+      : index === phases.length - 1
+        ? [0, 1, 1]
+        : [0, 1, 1, 0];
+
+  const opacity = useTransform(scrollYProgress, opacityInput, opacityOutput);
+
+  const yInput =
+    index === 0
+      ? [start, end - fade, end + 0.01]
+      : index === phases.length - 1
+        ? [start - 0.01, start + fade, 1]
+        : [start - 0.01, start + fade, end - fade, end + 0.01];
+
+  const yOutput =
+    index === 0
+      ? [0, 0, -15]
+      : index === phases.length - 1
+        ? [15, 0, 0]
+        : [15, 0, 0, -15];
+
+  const y = useTransform(scrollYProgress, yInput, yOutput);
+
+  return (
+    <motion.div className="absolute inset-0" style={{ opacity, y }}>
+      <div className="flex items-center gap-3 mb-3">
+        <div
+          className={`w-2 h-2 rounded-full ${
+            phase.status === "active"
+              ? "bg-[#00D4AA] shadow-[0_0_8px_rgba(0,212,170,0.5)]"
+              : "bg-[#00D4AA]/50"
+          }`}
+        />
+        <span className="font-mono text-xs tracking-[0.2em] text-[#00D4AA] uppercase">
+          Phase {phase.phase}
+        </span>
+        <span className="font-mono text-xs text-zinc-600">
+          {phase.timeline}
+        </span>
+        {phase.status === "active" && (
+          <span className="px-2 py-0.5 rounded-full bg-[#00D4AA]/10 font-mono text-[10px] text-[#00D4AA] tracking-wide uppercase">
+            Current
+          </span>
+        )}
+      </div>
+
+      <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2">
+        {phase.title}
+      </h3>
+
+      <p className="text-sm leading-relaxed text-zinc-400 mb-3 max-w-lg">
+        {phase.description}
+      </p>
+
+      <div className="flex items-center gap-6">
+        <span className="font-mono text-xs text-zinc-500">{phase.label}</span>
+        <span className="font-mono text-sm font-semibold text-[#FAFAFA]">
+          {phase.cost}
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Progress Track ──────────────────────────────────────────────────
+
+function ProgressTrack({
+  scrollYProgress,
+}: {
+  scrollYProgress: MotionValue<number>;
+}) {
+  const scaleX = useTransform(scrollYProgress, [0, 0.75, 1], [0.005, 1, 1]);
+
+  return (
+    <div>
+      <div className="flex justify-between mb-2">
+        {phases.map((phase, i) => (
+          <TrackLabel
+            key={i}
+            label={phase.phase}
+            index={i}
+            scrollYProgress={scrollYProgress}
+          />
+        ))}
+      </div>
+      <div className="relative h-3 flex items-center">
+        <div className="absolute inset-x-0 h-[1px] bg-white/[0.06] rounded-full" />
+        <motion.div
+          className="absolute inset-x-0 h-[1px] bg-[#00D4AA] origin-left rounded-full"
+          style={{ scaleX }}
+        />
+        <div className="relative w-full flex justify-between">
+          {phases.map((_, i) => (
+            <TrackDot key={i} index={i} scrollYProgress={scrollYProgress} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TrackLabel({
+  label,
+  index,
+  scrollYProgress,
+}: {
+  label: string;
+  index: number;
+  scrollYProgress: MotionValue<number>;
+}) {
+  const isActive = useTransform(scrollYProgress, (v) => v >= index * 0.25);
+  const opacity = useTransform(isActive, (v) => (v ? 1 : 0.3));
+  const color = useTransform(isActive, (v) =>
+    v ? "#00D4AA" : "rgb(82,82,91)"
+  );
+
+  return (
+    <motion.span
+      className="font-mono text-[10px] tracking-[0.15em] uppercase"
+      style={{ opacity, color }}
+    >
+      {label}
+    </motion.span>
+  );
+}
+
+function TrackDot({
+  index,
+  scrollYProgress,
+}: {
+  index: number;
+  scrollYProgress: MotionValue<number>;
+}) {
+  const isActive = useTransform(scrollYProgress, (v) => v >= index * 0.25);
+  const bg = useTransform(isActive, (v) =>
+    v ? "#00D4AA" : "rgba(255,255,255,0.1)"
+  );
+  const scale = useTransform(isActive, (v) => (v ? 1 : 0.5));
+  const shadow = useTransform(isActive, (v) =>
+    v ? "0 0 8px rgba(0,212,170,0.4)" : "none"
+  );
+
+  return (
+    <motion.div
+      className="w-2.5 h-2.5 rounded-full"
+      style={{
+        backgroundColor: bg,
+        scale,
+        boxShadow: shadow,
+      }}
+    />
   );
 }
