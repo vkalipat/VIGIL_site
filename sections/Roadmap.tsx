@@ -6,6 +6,7 @@ import {
   useScroll,
   useTransform,
   useMotionValueEvent,
+  AnimatePresence,
   MotionValue,
 } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -15,6 +16,8 @@ const GlobePulse = dynamic(
   () => import("@/components/GlobePulse").then((m) => m.GlobePulse),
   { ssr: false, loading: () => <div className="aspect-square" /> }
 );
+
+const ease = [0.16, 1, 0.3, 1] as const;
 
 // ─── Phase Data ──────────────────────────────────────────────────────
 
@@ -65,38 +68,68 @@ const phases = [
   },
 ];
 
-// ─── Globe Markers ───────────────────────────────────────────────────
+// ─── Globe Markers (ordered so they add one-by-one) ──────────────────
 
 const GLOBE_MARKERS: MarkerData[] = [
-  // Phase 0 — Georgia pilot
-  { id: "emory", location: [33.79, -84.39], phase: 0, delay: 0 },
-  { id: "augusta", location: [33.47, -81.97], phase: 0, delay: 0.4 },
-  // Phase 1 — US community hospitals
-  { id: "houston", location: [29.76, -95.37], phase: 1, delay: 0 },
-  { id: "chicago", location: [41.88, -87.63], phase: 1, delay: 0.25 },
-  { id: "phoenix", location: [33.45, -112.07], phase: 1, delay: 0.5 },
-  { id: "nashville", location: [36.16, -86.78], phase: 1, delay: 0.75 },
-  { id: "denver", location: [39.74, -104.99], phase: 1, delay: 1.0 },
-  { id: "boston", location: [42.36, -71.06], phase: 1, delay: 1.25 },
-  // Phase 2 — Worldwide + LMIC
-  { id: "london", location: [51.51, -0.13], phase: 2, delay: 0 },
-  { id: "nairobi", location: [-1.29, 36.82], phase: 2, delay: 0.2 },
-  { id: "mumbai", location: [19.08, 72.88], phase: 2, delay: 0.4 },
-  { id: "lagos", location: [6.52, 3.38], phase: 2, delay: 0.6 },
-  { id: "sao-paulo", location: [-23.55, -46.63], phase: 2, delay: 0.8 },
-  { id: "johannesburg", location: [-26.2, 28.05], phase: 2, delay: 1.0 },
-  { id: "manila", location: [14.6, 120.98], phase: 2, delay: 1.2 },
-  { id: "dhaka", location: [23.81, 90.41], phase: 2, delay: 1.4 },
-  // Phase 3 — Global scale
-  { id: "tokyo", location: [35.68, 139.65], phase: 3, delay: 0 },
-  { id: "sydney", location: [-33.87, 151.21], phase: 3, delay: 0.2 },
-  { id: "berlin", location: [52.52, 13.41], phase: 3, delay: 0.4 },
-  { id: "cairo", location: [30.04, 31.24], phase: 3, delay: 0.6 },
-  { id: "mexico-city", location: [19.43, -99.13], phase: 3, delay: 0.8 },
-  { id: "singapore", location: [1.35, 103.82], phase: 3, delay: 1.0 },
-  { id: "lima", location: [-12.05, -77.04], phase: 3, delay: 1.2 },
-  { id: "kampala", location: [0.35, 32.58], phase: 3, delay: 1.4 },
+  // Georgia pilot (first 2)
+  { id: "emory", location: [33.79, -84.39], delay: 0 },
+  { id: "augusta", location: [33.47, -81.97], delay: 0.4 },
+  // US expansion (3–8)
+  { id: "houston", location: [29.76, -95.37], delay: 0 },
+  { id: "chicago", location: [41.88, -87.63], delay: 0.25 },
+  { id: "phoenix", location: [33.45, -112.07], delay: 0.5 },
+  { id: "nashville", location: [36.16, -86.78], delay: 0.75 },
+  { id: "denver", location: [39.74, -104.99], delay: 1.0 },
+  { id: "boston", location: [42.36, -71.06], delay: 1.25 },
+  // Worldwide (9–16)
+  { id: "london", location: [51.51, -0.13], delay: 0 },
+  { id: "nairobi", location: [-1.29, 36.82], delay: 0.2 },
+  { id: "mumbai", location: [19.08, 72.88], delay: 0.4 },
+  { id: "lagos", location: [6.52, 3.38], delay: 0.6 },
+  { id: "sao-paulo", location: [-23.55, -46.63], delay: 0.8 },
+  { id: "johannesburg", location: [-26.2, 28.05], delay: 1.0 },
+  { id: "manila", location: [14.6, 120.98], delay: 1.2 },
+  { id: "dhaka", location: [23.81, 90.41], delay: 1.4 },
+  // Global (17–24)
+  { id: "tokyo", location: [35.68, 139.65], delay: 0 },
+  { id: "sydney", location: [-33.87, 151.21], delay: 0.2 },
+  { id: "berlin", location: [52.52, 13.41], delay: 0.4 },
+  { id: "cairo", location: [30.04, 31.24], delay: 0.6 },
+  { id: "mexico-city", location: [19.43, -99.13], delay: 0.8 },
+  { id: "singapore", location: [1.35, 103.82], delay: 1.0 },
+  { id: "lima", location: [-12.05, -77.04], delay: 1.2 },
+  { id: "kampala", location: [0.35, 32.58], delay: 1.4 },
 ];
+
+// ─── Bed count interpolation helper ──────────────────────────────────
+
+function interpolateBeds(progress: number): number {
+  const stops = [
+    [0, 10],
+    [0.18, 10],
+    [0.28, 40],
+    [0.43, 40],
+    [0.53, 120],
+    [0.68, 120],
+    [0.78, 200],
+    [1.0, 200],
+  ] as const;
+
+  if (progress <= stops[0][0]) return stops[0][1];
+  if (progress >= stops[stops.length - 1][0])
+    return stops[stops.length - 1][1];
+
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [x0, y0] = stops[i];
+    const [x1, y1] = stops[i + 1];
+    if (progress >= x0 && progress <= x1) {
+      if (x1 === x0) return y0;
+      const t = (progress - x0) / (x1 - x0);
+      return Math.round(y0 + t * (y1 - y0));
+    }
+  }
+  return 200;
+}
 
 // ─── Main Component ──────────────────────────────────────────────────
 
@@ -107,18 +140,24 @@ export default function Roadmap() {
     offset: ["start start", "end end"],
   });
 
-  const bedCount = useTransform(
-    scrollYProgress,
-    [0, 0.18, 0.28, 0.43, 0.53, 0.68, 0.78, 1.0],
-    [10, 10, 40, 40, 120, 120, 200, 200]
-  );
-  const displayCount = useTransform(bedCount, (v) => Math.round(v));
-
   const [activePhase, setActivePhase] = useState(0);
+  const [bedDisplay, setBedDisplay] = useState(10);
+  const [markerCount, setMarkerCount] = useState(2);
+
   useMotionValueEvent(scrollYProgress, "change", (v) => {
+    // Phase
     const p = v < 0.25 ? 0 : v < 0.5 ? 1 : v < 0.75 ? 2 : 3;
-    if (p !== activePhase) setActivePhase(p);
+    setActivePhase(p);
+
+    // Bed count
+    setBedDisplay(interpolateBeds(v));
+
+    // Marker count — one by one across the full scroll
+    const count = Math.max(2, Math.min(24, Math.round(2 + v * 22)));
+    setMarkerCount(count);
   });
+
+  const phase = phases[activePhase];
 
   return (
     <section ref={sectionRef} className="relative h-[300vh]">
@@ -141,9 +180,9 @@ export default function Roadmap() {
                 </h2>
 
                 <div className="flex items-baseline mb-1">
-                  <motion.span className="text-[clamp(4rem,12vw,9rem)] font-bold tabular-nums tracking-tighter leading-none text-[#FAFAFA]">
-                    {displayCount}
-                  </motion.span>
+                  <span className="text-[clamp(4rem,12vw,9rem)] font-bold tabular-nums tracking-tighter leading-none text-[#FAFAFA]">
+                    {bedDisplay}
+                  </span>
                   <span className="text-[clamp(1.2rem,3vw,2.5rem)] font-bold text-[#00D4AA]/20 ml-1 leading-none">
                     +
                   </span>
@@ -152,15 +191,56 @@ export default function Roadmap() {
                   beds continuously monitored
                 </p>
 
+                {/* Phase detail — state-driven crossfade */}
                 <div className="relative h-40 md:h-36">
-                  {phases.map((phase, i) => (
-                    <PhaseDetail
-                      key={i}
-                      phase={phase}
-                      index={i}
-                      scrollYProgress={scrollYProgress}
-                    />
-                  ))}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activePhase}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -15 }}
+                      transition={{ duration: 0.35, ease }}
+                      className="absolute inset-0"
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            phase.status === "active"
+                              ? "bg-[#00D4AA] shadow-[0_0_8px_rgba(0,212,170,0.5)]"
+                              : "bg-[#00D4AA]/50"
+                          }`}
+                        />
+                        <span className="font-mono text-xs tracking-[0.2em] text-[#00D4AA] uppercase">
+                          Phase {phase.phase}
+                        </span>
+                        <span className="font-mono text-xs text-zinc-600">
+                          {phase.timeline}
+                        </span>
+                        {phase.status === "active" && (
+                          <span className="px-2 py-0.5 rounded-full bg-[#00D4AA]/10 font-mono text-[10px] text-[#00D4AA] tracking-wide uppercase">
+                            Current
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2">
+                        {phase.title}
+                      </h3>
+
+                      <p className="text-sm leading-relaxed text-zinc-400 mb-3 max-w-lg">
+                        {phase.description}
+                      </p>
+
+                      <div className="flex items-center gap-6">
+                        <span className="font-mono text-xs text-zinc-500">
+                          {phase.label}
+                        </span>
+                        <span className="font-mono text-sm font-semibold text-[#FAFAFA]">
+                          {phase.cost}
+                        </span>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -168,7 +248,7 @@ export default function Roadmap() {
               <div className="hidden lg:block">
                 <GlobePulse
                   markers={GLOBE_MARKERS}
-                  activePhase={activePhase}
+                  visibleCount={markerCount}
                   className="max-w-[440px] mx-auto"
                 />
               </div>
@@ -186,94 +266,6 @@ export default function Roadmap() {
         </div>
       </div>
     </section>
-  );
-}
-
-// ─── Phase Detail (crossfading) ──────────────────────────────────────
-
-function PhaseDetail({
-  phase,
-  index,
-  scrollYProgress,
-}: {
-  phase: (typeof phases)[number];
-  index: number;
-  scrollYProgress: MotionValue<number>;
-}) {
-  const start = index * 0.25;
-  const end = (index + 1) * 0.25;
-  const fade = 0.04;
-
-  const opacityInput =
-    index === 0
-      ? [start, end - fade, end + 0.01]
-      : index === phases.length - 1
-        ? [start - 0.01, start + fade, 1]
-        : [start - 0.01, start + fade, end - fade, end + 0.01];
-
-  const opacityOutput =
-    index === 0
-      ? [1, 1, 0]
-      : index === phases.length - 1
-        ? [0, 1, 1]
-        : [0, 1, 1, 0];
-
-  const opacity = useTransform(scrollYProgress, opacityInput, opacityOutput);
-
-  const yInput =
-    index === 0
-      ? [start, end - fade, end + 0.01]
-      : index === phases.length - 1
-        ? [start - 0.01, start + fade, 1]
-        : [start - 0.01, start + fade, end - fade, end + 0.01];
-
-  const yOutput =
-    index === 0
-      ? [0, 0, -15]
-      : index === phases.length - 1
-        ? [15, 0, 0]
-        : [15, 0, 0, -15];
-
-  const y = useTransform(scrollYProgress, yInput, yOutput);
-
-  return (
-    <motion.div className="absolute inset-0" style={{ opacity, y }}>
-      <div className="flex items-center gap-3 mb-3">
-        <div
-          className={`w-2 h-2 rounded-full ${
-            phase.status === "active"
-              ? "bg-[#00D4AA] shadow-[0_0_8px_rgba(0,212,170,0.5)]"
-              : "bg-[#00D4AA]/50"
-          }`}
-        />
-        <span className="font-mono text-xs tracking-[0.2em] text-[#00D4AA] uppercase">
-          Phase {phase.phase}
-        </span>
-        <span className="font-mono text-xs text-zinc-600">
-          {phase.timeline}
-        </span>
-        {phase.status === "active" && (
-          <span className="px-2 py-0.5 rounded-full bg-[#00D4AA]/10 font-mono text-[10px] text-[#00D4AA] tracking-wide uppercase">
-            Current
-          </span>
-        )}
-      </div>
-
-      <h3 className="text-xl md:text-2xl font-semibold text-[#FAFAFA] mb-2">
-        {phase.title}
-      </h3>
-
-      <p className="text-sm leading-relaxed text-zinc-400 mb-3 max-w-lg">
-        {phase.description}
-      </p>
-
-      <div className="flex items-center gap-6">
-        <span className="font-mono text-xs text-zinc-500">{phase.label}</span>
-        <span className="font-mono text-sm font-semibold text-[#FAFAFA]">
-          {phase.cost}
-        </span>
-      </div>
-    </motion.div>
   );
 }
 

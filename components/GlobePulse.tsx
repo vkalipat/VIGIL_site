@@ -6,19 +6,18 @@ import createGlobe from "cobe";
 export interface MarkerData {
   id: string;
   location: [number, number];
-  phase: number;
   delay: number;
 }
 
 interface GlobePulseProps {
   markers: MarkerData[];
-  activePhase: number;
+  visibleCount: number;
   className?: string;
 }
 
 export function GlobePulse({
   markers,
-  activePhase,
+  visibleCount,
   className = "",
 }: GlobePulseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -29,8 +28,8 @@ export function GlobePulse({
   const phiOffsetRef = useRef(0);
   const thetaOffsetRef = useRef(0);
   const isPausedRef = useRef(false);
-  const activePhasRef = useRef(activePhase);
-  activePhasRef.current = activePhase;
+  const visibleCountRef = useRef(visibleCount);
+  visibleCountRef.current = visibleCount;
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     pointerInteracting.current = { x: e.clientX, y: e.clientY };
@@ -85,9 +84,9 @@ export function GlobePulse({
       baseColor: [0.3, 0.3, 0.3],
       markerColor: [0, 0.83, 0.67],
       glowColor: [0.02, 0.02, 0.04],
-      markers: markers.map((m) => ({
+      markers: markers.map((m, i) => ({
         location: m.location,
-        size: m.phase <= activePhasRef.current ? 0.03 : 0.005,
+        size: i < visibleCountRef.current ? 0.03 : 0,
         id: m.id,
       })),
       opacity: 0.85,
@@ -100,13 +99,9 @@ export function GlobePulse({
       if (!isPausedRef.current) phiRef.current += 0.003;
       globe.update({
         phi:
-          phiRef.current +
-          phiOffsetRef.current +
-          dragOffset.current.phi,
+          phiRef.current + phiOffsetRef.current + dragOffset.current.phi,
         theta:
-          0.2 +
-          thetaOffsetRef.current +
-          dragOffset.current.theta,
+          0.2 + thetaOffsetRef.current + dragOffset.current.theta,
       });
       animationId = requestAnimationFrame(animate);
     }
@@ -121,19 +116,19 @@ export function GlobePulse({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update marker sizes when phase changes
+  // Update marker sizes when visible count changes
   useEffect(() => {
     if (!globeRef.current) return;
     globeRef.current.update({
-      markers: markers.map((m) => ({
+      markers: markers.map((m, i) => ({
         location: m.location,
-        size: m.phase <= activePhase ? 0.03 : 0.005,
+        size: i < visibleCount ? 0.03 : 0,
         id: m.id,
       })),
     });
-  }, [activePhase, markers]);
+  }, [visibleCount, markers]);
 
-  const visibleMarkers = markers.filter((m) => m.phase <= activePhase);
+  const shown = markers.slice(0, visibleCount);
 
   return (
     <div className={`relative aspect-square select-none ${className}`}>
@@ -156,7 +151,7 @@ export function GlobePulse({
           touchAction: "none",
         }}
       />
-      {visibleMarkers.map((m) => (
+      {shown.map((m) => (
         <div
           key={m.id}
           style={
