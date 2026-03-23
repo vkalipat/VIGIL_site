@@ -79,11 +79,16 @@ export function GooeyText({
     }
 
     animate();
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animId);
+      // Reset DOM text to prevent removeChild errors during React unmount
+      if (text1Ref.current) text1Ref.current.textContent = "";
+      if (text2Ref.current) text2Ref.current.textContent = "";
+    };
   }, [texts, morphTime, cooldownTime]);
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} suppressHydrationWarning>
       <svg className="absolute h-0 w-0" aria-hidden="true" focusable="false">
         <defs>
           <filter id="gooey-threshold">
@@ -96,8 +101,8 @@ export function GooeyText({
         </defs>
       </svg>
       <div className="flex items-center justify-center" style={{ filter: "url(#gooey-threshold)" }}>
-        <span ref={text1Ref} className="absolute inline-block select-none text-center text-6xl md:text-8xl lg:text-9xl font-bold text-[#FAFAFA]" />
-        <span ref={text2Ref} className="absolute inline-block select-none text-center text-6xl md:text-8xl lg:text-9xl font-bold text-[#FAFAFA]" />
+        <span ref={text1Ref} suppressHydrationWarning className="absolute inline-block select-none text-center text-6xl md:text-8xl lg:text-9xl font-bold text-[#FAFAFA]" />
+        <span ref={text2Ref} suppressHydrationWarning className="absolute inline-block select-none text-center text-6xl md:text-8xl lg:text-9xl font-bold text-[#FAFAFA]" />
       </div>
     </div>
   );
