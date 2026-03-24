@@ -1,17 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/HeroReveal.tsx",
-    "timestamp": 1774366569255,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Roadmap.tsx",
-    "timestamp": 1774366575495,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Navbar.tsx",
     "timestamp": 1774366584882,
     "focus": false,
@@ -56,6 +44,18 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Navbar.tsx",
     "timestamp": 1774367229013,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Logo.tsx",
+    "timestamp": 1774367297310,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Logo.tsx",
+    "timestamp": 1774367304910,
     "focus": false,
     "openLocation": 1
   }
