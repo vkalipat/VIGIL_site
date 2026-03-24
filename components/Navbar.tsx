@@ -20,18 +20,23 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
-  const lastScrollY = useState(0);
+  const lastDirectionChangeY = useState(0);
+  const wasGoingDown = useState(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const prev = lastScrollY[0];
     setScrolled(latest > 20);
-    // Hide navbar when scrolling down past 100px, show when scrolling up
-    if (latest > 100 && latest > prev) {
-      setHidden(true);
+    const goingDown = latest > lastDirectionChangeY[0];
+
+    // Only react when direction changes and we've moved at least 15px
+    if (goingDown !== wasGoingDown[0]) {
+      if (Math.abs(latest - lastDirectionChangeY[0]) > 15) {
+        setHidden(goingDown && latest > 100);
+        lastDirectionChangeY[0] = latest;
+        wasGoingDown[0] = goingDown;
+      }
     } else {
-      setHidden(false);
+      lastDirectionChangeY[0] = latest;
     }
-    lastScrollY[0] = latest;
   });
 
   return (
