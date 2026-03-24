@@ -16,20 +16,30 @@ const navLinks = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
+  const lastScrollY = useState(0);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
+    const prev = lastScrollY[0];
     setScrolled(latest > 20);
+    // Hide navbar when scrolling down past 100px, show when scrolling up
+    if (latest > 100 && latest > prev) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+    lastScrollY[0] = latest;
   });
 
   return (
     <>
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        animate={{ y: hidden ? -100 : 0, opacity: 1 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-[#0A0A0F]"
       >
 
