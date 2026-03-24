@@ -1,35 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774302883094,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774302892948,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774302899246,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Contact.tsx",
-    "timestamp": 1774304969708,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Contact.tsx",
-    "timestamp": 1774304999283,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Contact.tsx",
     "timestamp": 1774325798079,
     "focus": false,
@@ -56,6 +26,36 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
     "timestamp": 1774326367557,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774366552802,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/HeroReveal.tsx",
+    "timestamp": 1774366569255,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Roadmap.tsx",
+    "timestamp": 1774366575495,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Navbar.tsx",
+    "timestamp": 1774366584882,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Navbar.tsx",
+    "timestamp": 1774366602589,
     "focus": false,
     "openLocation": 1
   }
