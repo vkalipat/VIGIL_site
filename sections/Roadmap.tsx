@@ -160,7 +160,7 @@ export default function Roadmap() {
   const phase = phases[activePhase];
 
   return (
-    <section ref={sectionRef} className="relative h-[220vh]">
+    <section ref={sectionRef} className="relative h-[180vh]">
       <div className="sticky top-0 h-screen bg-[#0A0A0F] overflow-hidden">
         <div className="h-full flex flex-col justify-between px-6 py-10 md:py-14">
           {/* Section label */}
