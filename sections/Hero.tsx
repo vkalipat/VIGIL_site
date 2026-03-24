@@ -75,7 +75,7 @@ export default function Hero() {
       ScrollTrigger.create({
         trigger: wrapperRef.current,
         start: "top top",
-        end: "+=1150%",
+        end: "+=850%",
         pin: true,
         scrub: 0,
         onUpdate: (self) => {
