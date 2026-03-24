@@ -1,11 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774366552802,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/HeroReveal.tsx",
     "timestamp": 1774366569255,
     "focus": false,
@@ -56,6 +50,12 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Navbar.tsx",
     "timestamp": 1774367070287,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/Navbar.tsx",
+    "timestamp": 1774367229013,
     "focus": false,
     "openLocation": 1
   }
