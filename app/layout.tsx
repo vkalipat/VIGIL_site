@@ -15,7 +15,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vigilhealth.org"),
+  metadataBase: new URL("https://vigilhealth.us"),
   title: {
     default: "VIGIL Health — Continuous ICU-Grade Monitoring at Ultra-Low Cost",
     template: "%s | VIGIL Health",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://vigilhealth.org",
+    url: "https://vigilhealth.us",
     siteName: "VIGIL Health",
     title: "VIGIL Health — Continuous ICU-Grade Monitoring at Ultra-Low Cost",
     description:
@@ -79,7 +79,7 @@ export default function RootLayout({
               manufacturer: {
                 "@type": "Organization",
                 name: "VIGIL Health",
-                url: "https://vigilhealth.org",
+                url: "https://vigilhealth.us",
                 address: {
                   "@type": "PostalAddress",
                   addressLocality: "Cumming",

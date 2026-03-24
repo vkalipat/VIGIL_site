@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://vigilhealth.org";
+const BASE_URL = "https://vigilhealth.us";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

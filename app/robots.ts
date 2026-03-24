@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://vigilhealth.org/sitemap.xml",
+    sitemap: "https://vigilhealth.us/sitemap.xml",
   };
 }
