@@ -198,7 +198,7 @@ export default function HeroReveal() {
       </div>
 
       {/* Scroll height */}
-      <div className="h-[270vh]" aria-hidden="true" />
+      <div className="h-[230vh]" aria-hidden="true" />
     </div>
   );
 }
