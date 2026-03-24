@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import CursorGlow from "@/components/CursorGlow";
 import ScrollProgress from "@/components/ScrollProgress";
+import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -30,6 +31,7 @@ export default function RootLayout({
         <CursorGlow />
         <ScrollProgress />
         <SmoothScroll>
+          <ScrollToTop />
           <Navbar />
           {children}
           <Footer />
