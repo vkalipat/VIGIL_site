@@ -159,7 +159,7 @@ export default function Contact() {
                 within 48 hours.
               </p>
               <a
-                href="mailto:pilots@vigil.health?subject=Pilot%20Program%20Inquiry"
+                href="mailto:vkalipat08@gmail.com?subject=Pilot%20Program%20Inquiry"
                 className="bg-[#00D4AA] text-[#0A0A0F] font-semibold px-8 py-3 rounded-lg hover:brightness-110 transition-all inline-flex items-center gap-2 w-full justify-center"
               >
                 <Mail className="w-4 h-4" />
@@ -186,7 +186,7 @@ export default function Contact() {
                 deployment, integration, and pricing.
               </p>
               <a
-                href="mailto:pilots@vigil.health?subject=Schedule%20a%20Call"
+                href="mailto:vkalipat08@gmail.com?subject=Schedule%20a%20Call"
                 className="border border-white/[0.15] text-[#FAFAFA] px-8 py-3 rounded-lg hover:bg-white/[0.05] transition-all inline-flex items-center gap-2 w-full justify-center"
               >
                 <Phone className="w-4 h-4" />
@@ -206,27 +206,27 @@ export default function Contact() {
 
               <div className="space-y-3">
                 <a
-                  href="mailto:pilots@vigil.health"
+                  href="mailto:vkalipat08@gmail.com"
                   className="flex items-center gap-3 group"
                 >
                   <Mail className="w-4 h-4 text-zinc-600 group-hover:text-[#00D4AA] transition-colors" />
                   <span className="text-sm text-zinc-400 group-hover:text-[#FAFAFA] transition-colors">
-                    pilots@vigil.health
+                    vkalipat08@gmail.com
                   </span>
                 </a>
                 <a
-                  href="mailto:contact@vigil.health"
+                  href="tel:4706558183"
                   className="flex items-center gap-3 group"
                 >
-                  <Mail className="w-4 h-4 text-zinc-600 group-hover:text-[#00D4AA] transition-colors" />
+                  <Phone className="w-4 h-4 text-zinc-600 group-hover:text-[#00D4AA] transition-colors" />
                   <span className="text-sm text-zinc-400 group-hover:text-[#FAFAFA] transition-colors">
-                    contact@vigil.health
+                    (470) 655-8183
                   </span>
                 </a>
                 <div className="flex items-center gap-3">
                   <MapPin className="w-4 h-4 text-zinc-600" />
                   <span className="text-sm text-zinc-400">
-                    San Francisco, CA — EST/PST business hours
+                    Cumming, GA — EST/PST business hours
                   </span>
                 </div>
               </div>
