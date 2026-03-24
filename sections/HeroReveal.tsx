@@ -107,7 +107,7 @@ export default function HeroReveal() {
           {/* Gooey MEET → VIGIL morph */}
           <motion.div
             style={{ opacity: vigilOpacity, scale: vigilScale }}
-            className="mb-4"
+            className="mb-1"
           >
             <div className="h-[90px] md:h-[140px] flex items-center justify-center">
               <GooeyText

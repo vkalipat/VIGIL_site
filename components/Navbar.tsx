@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -20,23 +20,12 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
-  const lastDirectionChangeY = useState(0);
-  const wasGoingDown = useState(false);
+  const prevY = useRef(0);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
-    const goingDown = latest > lastDirectionChangeY[0];
-
-    // Only react when direction changes and we've moved at least 15px
-    if (goingDown !== wasGoingDown[0]) {
-      if (Math.abs(latest - lastDirectionChangeY[0]) > 15) {
-        setHidden(goingDown && latest > 100);
-        lastDirectionChangeY[0] = latest;
-        wasGoingDown[0] = goingDown;
-      }
-    } else {
-      lastDirectionChangeY[0] = latest;
-    }
+    setHidden(latest > 100 && latest > prevY.current);
+    prevY.current = latest;
   });
 
   return (
