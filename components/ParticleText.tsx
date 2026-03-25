@@ -52,7 +52,7 @@ export function ParticleText({
     offCtx.font = `900 ${fontSize}px "Arial Black", "Impact", sans-serif`;
     offCtx.textAlign = "center";
     offCtx.textBaseline = "middle";
-    offCtx.fillText(text, w / 2, h / 2 - h * 0.08);
+    offCtx.fillText(text, w / 2, h * 0.15);
 
     const data = offCtx.getImageData(0, 0, w, h).data;
     const gap = 3;
