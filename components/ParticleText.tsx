@@ -10,10 +10,16 @@ interface Particle {
   vx: number;
   vy: number;
   size: number;
-  opacity: number;
+  color: string;
 }
 
-export function ParticleText({ text = "VIGIL" }: { text?: string }) {
+export function ParticleText({
+  text = "VIGIL",
+  onFadeRef,
+}: {
+  text?: string;
+  onFadeRef?: React.MutableRefObject<HTMLCanvasElement | null>;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999 });
@@ -27,11 +33,15 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
     const rect = canvas.getBoundingClientRect();
     const w = rect.width;
     const h = rect.height;
+    if (w === 0 || h === 0) return;
+
     canvas.width = w;
     canvas.height = h;
     dimRef.current = { w, h };
 
-    // Draw text offscreen to sample pixel positions
+    // Expose canvas ref for external fade control
+    if (onFadeRef) onFadeRef.current = canvas;
+
     const off = document.createElement("canvas");
     off.width = w;
     off.height = h;
@@ -42,9 +52,8 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
     offCtx.font = `900 ${fontSize}px "Arial Black", "Impact", sans-serif`;
     offCtx.textAlign = "center";
     offCtx.textBaseline = "middle";
-    offCtx.fillText(text, w / 2, h / 2);
+    offCtx.fillText(text, w / 2, h / 2 - h * 0.08);
 
-    // Sample pixels into particles
     const data = offCtx.getImageData(0, 0, w, h).data;
     const gap = 3;
     const particles: Particle[] = [];
@@ -52,6 +61,9 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
     for (let y = 0; y < h; y += gap) {
       for (let x = 0; x < w; x += gap) {
         if (data[(y * w + x) * 4 + 3] > 128) {
+          // ~25% of particles are teal, rest white
+          const isTeal = Math.random() < 0.25;
+          const opacity = 0.5 + Math.random() * 0.5;
           particles.push({
             x,
             y,
@@ -60,16 +72,17 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
             vx: 0,
             vy: 0,
             size: Math.random() * 1.5 + 0.8,
-            opacity: 0.5 + Math.random() * 0.5,
+            color: isTeal
+              ? `rgba(0,212,170,${opacity})`
+              : `rgba(250,250,250,${opacity})`,
           });
         }
       }
     }
     particlesRef.current = particles;
-  }, [text]);
+  }, [text, onFadeRef]);
 
   useEffect(() => {
-    // Delay init to ensure canvas has layout dimensions
     requestAnimationFrame(() => init());
     window.addEventListener("resize", init);
 
@@ -89,6 +102,11 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
 
     function animate() {
       const { w, h } = dimRef.current;
+      if (w === 0) {
+        animRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
       const { x: mx, y: my } = mouseRef.current;
       const radius = 100;
@@ -105,19 +123,14 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
           p.vy -= Math.sin(angle) * push;
         }
 
-        // Spring back
         p.vx += (p.originX - p.x) * 0.045;
         p.vy += (p.originY - p.y) * 0.045;
-
-        // Damping
         p.vx *= 0.82;
         p.vy *= 0.82;
-
         p.x += p.vx;
         p.y += p.vy;
 
-        // Draw particle
-        ctx.fillStyle = `rgba(250,250,250,${p.opacity})`;
+        ctx.fillStyle = p.color;
         ctx.fillRect(p.x, p.y, p.size, p.size);
       }
 
@@ -134,18 +147,9 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
   }, [init]);
 
   return (
-    <section className="relative h-screen bg-[#0A0A0F] flex items-center justify-center overflow-hidden">
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full cursor-crosshair"
-      />
-      {/* Subtle scroll hint */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
-        <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
-          Scroll
-        </span>
-        <div className="w-[1px] h-6 bg-gradient-to-b from-zinc-500 to-transparent" />
-      </div>
-    </section>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full z-20 pointer-events-auto cursor-crosshair"
+    />
   );
 }

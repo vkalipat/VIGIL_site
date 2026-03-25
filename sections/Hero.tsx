@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const ParticleText = dynamic(
+  () => import("@/components/ParticleText").then((m) => m.ParticleText),
+  { ssr: false }
+);
 
 const FRAME_COUNT = 120;
 const IMAGE_PATH = "/images/hero-frames/frame-";
@@ -17,12 +23,12 @@ function frameUrl(index: number): string {
 export default function Hero() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [loaded, setLoaded] = useState(false);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameRef = useRef(0);
   const gsapCtxRef = useRef<gsap.Context | null>(null);
 
-  // Synchronous cleanup: revert GSAP pin BEFORE React removes DOM nodes
   useLayoutEffect(() => {
     return () => {
       gsapCtxRef.current?.revert();
@@ -30,7 +36,6 @@ export default function Hero() {
     };
   }, []);
 
-  // Preload frames 1-96
   useEffect(() => {
     const images: HTMLImageElement[] = [];
     let loadedCount = 0;
@@ -71,7 +76,7 @@ export default function Hero() {
 
     drawFrame(0);
 
-    const gsapCtx = gsapCtxRef.current = gsap.context(() => {
+    const gsapCtx = (gsapCtxRef.current = gsap.context(() => {
       ScrollTrigger.create({
         trigger: wrapperRef.current,
         start: "top top",
@@ -81,8 +86,13 @@ export default function Hero() {
         onUpdate: (self) => {
           const p = self.progress;
 
-          // First 90% of scroll: rotate through frames
-          // Last 10%: headband fades out fast
+          // Fade out particle text in first 20% of scroll
+          if (particleCanvasRef.current) {
+            particleCanvasRef.current.style.opacity = String(
+              Math.max(0, 1 - p * 5)
+            );
+          }
+
           if (p <= 0.9) {
             const frameProgress = p / 0.9;
             const frameIndex = Math.min(
@@ -98,7 +108,6 @@ export default function Hero() {
               canvas.style.transform = "scale(1) translateY(0)";
             }
           } else {
-            // Clean crossfade to black
             const fadeProgress = (p - 0.9) / 0.1;
             if (canvas) {
               canvas.style.opacity = String(1 - fadeProgress);
@@ -107,21 +116,27 @@ export default function Hero() {
           }
         },
       });
-    }, wrapperRef);
+    }, wrapperRef));
 
     return () => gsapCtx.revert();
   }, [loaded]);
 
   return (
-    <div ref={wrapperRef} className="h-screen relative overflow-hidden bg-[#0A0A0F]">
+    <div
+      ref={wrapperRef}
+      className="h-screen relative overflow-hidden bg-[#0A0A0F]"
+    >
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full object-cover transition-none"
       />
 
+      {/* Particle VIGIL overlay */}
+      <ParticleText text="VIGIL" onFadeRef={particleCanvasRef} />
+
       {/* Loading state */}
       {!loaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#0A0A0F]">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#0A0A0F] z-30">
           <div className="flex items-center gap-3">
             <span className="inline-block w-2 h-2 rounded-full bg-[#00D4AA] animate-pulse" />
             <span className="font-mono text-xs tracking-widest text-zinc-500 uppercase">
