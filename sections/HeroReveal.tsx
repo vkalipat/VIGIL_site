@@ -102,7 +102,7 @@ export default function HeroReveal() {
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
       <div className="sticky top-0 h-screen flex items-center justify-center relative overflow-hidden">
-        <div className="w-full max-w-5xl mx-auto px-6 text-center">
+        <div className="w-full max-w-5xl mx-auto px-6 text-center mt-[15vh]">
 
           {/* Gooey MEET → VIGIL morph */}
           <motion.div

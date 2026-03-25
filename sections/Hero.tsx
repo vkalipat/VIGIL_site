@@ -70,7 +70,9 @@ export default function Hero() {
     function drawFrame(index: number) {
       const img = imagesRef.current[index];
       if (img && ctx) {
-        ctx.drawImage(img, 0, 0, canvas!.width, canvas!.height);
+        ctx.clearRect(0, 0, canvas!.width, canvas!.height);
+        const offsetY = canvas!.height * 0.1;
+        ctx.drawImage(img, 0, offsetY, canvas!.width, canvas!.height);
       }
     }
 
