@@ -69,7 +69,8 @@ export function ParticleText({ text = "VIGIL" }: { text?: string }) {
   }, [text]);
 
   useEffect(() => {
-    init();
+    // Delay init to ensure canvas has layout dimensions
+    requestAnimationFrame(() => init());
     window.addEventListener("resize", init);
 
     const canvas = canvasRef.current!;
