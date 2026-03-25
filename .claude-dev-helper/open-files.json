@@ -1,23 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/workflow/page.tsx",
-    "timestamp": 1774368832932,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/workflow/page.tsx",
-    "timestamp": 1774368840806,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/team/page.tsx",
-    "timestamp": 1774368847203,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/team/page.tsx",
     "timestamp": 1774368854269,
     "focus": false,
@@ -56,6 +38,24 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
     "timestamp": 1774400719836,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/page.tsx",
+    "timestamp": 1774400978605,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
+    "timestamp": 1774401001818,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774401024124,
     "focus": false,
     "openLocation": 1
   }
