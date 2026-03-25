@@ -1,23 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/sitemap.ts",
-    "timestamp": 1774368804206,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/robots.ts",
-    "timestamp": 1774368810767,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/layout.tsx",
-    "timestamp": 1774368822578,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/workflow/page.tsx",
     "timestamp": 1774368832932,
     "focus": false,
@@ -56,6 +38,24 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/page.tsx",
     "timestamp": 1774400443435,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/page.tsx",
+    "timestamp": 1774400705805,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/ParticleBranding.tsx",
+    "timestamp": 1774400712433,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
+    "timestamp": 1774400719836,
     "focus": false,
     "openLocation": 1
   }
