@@ -1,17 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Roadmap.tsx",
-    "timestamp": 1774367577651,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/SmoothScroll.tsx",
-    "timestamp": 1774367585606,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/sitemap.ts",
     "timestamp": 1774368804206,
     "focus": false,
@@ -56,6 +44,18 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/layout.tsx",
     "timestamp": 1774368865526,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
+    "timestamp": 1774400426567,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/page.tsx",
+    "timestamp": 1774400443435,
     "focus": false,
     "openLocation": 1
   }
