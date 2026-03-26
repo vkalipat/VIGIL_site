@@ -1,11 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/ParticleBranding.tsx",
-    "timestamp": 1774400712433,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
     "timestamp": 1774400719836,
     "focus": false,
@@ -56,6 +50,12 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/globals.css",
     "timestamp": 1774404809966,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/CursorGlow.tsx",
+    "timestamp": 1774532171258,
     "focus": false,
     "openLocation": 1
   }
