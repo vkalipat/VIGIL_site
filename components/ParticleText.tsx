@@ -10,7 +10,8 @@ interface Particle {
   vx: number;
   vy: number;
   size: number;
-  color: string;
+  baseOpacity: number;
+  isTeal: boolean;
 }
 
 export function ParticleText({
@@ -61,9 +62,8 @@ export function ParticleText({
     for (let y = 0; y < h; y += gap) {
       for (let x = 0; x < w; x += gap) {
         if (data[(y * w + x) * 4 + 3] > 128) {
-          // ~25% of particles are teal, rest white
           const isTeal = Math.random() < 0.25;
-          const opacity = 0.5 + Math.random() * 0.5;
+          const baseOpacity = 0.5 + Math.random() * 0.5;
           particles.push({
             x,
             y,
@@ -72,9 +72,8 @@ export function ParticleText({
             vx: 0,
             vy: 0,
             size: Math.random() * 1.5 + 0.8,
-            color: isTeal
-              ? `rgba(0,212,170,${opacity})`
-              : `rgba(250,250,250,${opacity})`,
+            baseOpacity,
+            isTeal,
           });
         }
       }
@@ -109,16 +108,24 @@ export function ParticleText({
 
       ctx.clearRect(0, 0, w, h);
       const { x: mx, y: my } = mouseRef.current;
-      const radius = 100;
+      const radius = 120;
 
       for (const p of particlesRef.current) {
-        const dx = mx - p.x;
-        const dy = my - p.y;
+        const dx = mx - p.originX;
+        const dy = my - p.originY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
+        // Fade out particles near cursor (transparent reveal)
+        let opacity = p.baseOpacity;
+        if (dist < radius) {
+          const fade = dist / radius; // 0 at center, 1 at edge
+          opacity = p.baseOpacity * fade * fade; // quadratic falloff
+        }
+
+        // Gentle drift instead of hard push
         if (dist < radius) {
           const angle = Math.atan2(dy, dx);
-          const push = ((radius - dist) / radius) * 10;
+          const push = ((radius - dist) / radius) * 2;
           p.vx -= Math.cos(angle) * push;
           p.vy -= Math.sin(angle) * push;
         }
@@ -130,8 +137,12 @@ export function ParticleText({
         p.x += p.vx;
         p.y += p.vy;
 
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
+        if (opacity > 0.01) {
+          ctx.fillStyle = p.isTeal
+            ? `rgba(0,212,170,${opacity})`
+            : `rgba(250,250,250,${opacity})`;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
       }
 
       animRef.current = requestAnimationFrame(animate);
