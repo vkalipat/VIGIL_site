@@ -17,8 +17,11 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://vigilhealth.us"),
   title: {
-    default: "VIGIL Health — Continuous ICU-Grade Monitoring at Ultra-Low Cost",
-    template: "%s | VIGIL Health",
+    default: "VIGIL",
+    template: "%s | VIGIL",
+  },
+  icons: {
+    icon: "/images/vigil-icon.png",
   },
   description:
     "VIGIL is a multi-modal wearable headband for continuous vital sign monitoring in hospital general wards. Four sensors, under $50, monitoring every 5 seconds.",
