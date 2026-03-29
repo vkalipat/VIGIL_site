@@ -1,16 +1,10 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const ParticleText = dynamic(
-  () => import("@/components/ParticleText").then((m) => m.ParticleText),
-  { ssr: false }
-);
 
 const FRAME_COUNT = 120;
 const IMAGE_PATH = "/images/hero-frames/frame-";
@@ -23,7 +17,7 @@ function frameUrl(index: number): string {
 export default function Hero() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
   const [loaded, setLoaded] = useState(false);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameRef = useRef(0);
@@ -88,9 +82,9 @@ export default function Hero() {
         onUpdate: (self) => {
           const p = self.progress;
 
-          // Fade out particle text in first 20% of scroll
-          if (particleCanvasRef.current) {
-            particleCanvasRef.current.style.opacity = String(
+          // Fade out title in first 20% of scroll
+          if (titleRef.current) {
+            titleRef.current.style.opacity = String(
               Math.max(0, 1 - p * 5)
             );
           }
@@ -133,8 +127,15 @@ export default function Hero() {
         className="absolute inset-0 w-full h-full object-cover transition-none"
       />
 
-      {/* Particle VIGIL overlay */}
-      <ParticleText text="VIGIL" onFadeRef={particleCanvasRef} />
+      {/* VIGIL title */}
+      <h1
+        ref={titleRef}
+        className="absolute inset-0 z-20 flex items-start justify-center pt-[25vh] pointer-events-none"
+      >
+        <span className="font-mono text-[12vw] font-bold tracking-[0.15em] text-white/90">
+          VIGIL
+        </span>
+      </h1>
 
       {/* Loading state */}
       {!loaded && (
