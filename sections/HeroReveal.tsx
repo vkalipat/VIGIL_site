@@ -161,14 +161,11 @@ export default function HeroReveal() {
             className="mx-auto h-px bg-gradient-to-r from-transparent via-[#00D4AA]/30 to-transparent mb-12"
           />
 
-          {/* Stats — big monospaced numbers with glow */}
-          <div className="grid grid-cols-2 gap-6 md:flex md:items-center md:justify-center md:gap-16 mb-12">
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-x-12 gap-y-8 md:grid-cols-4 md:gap-x-16 max-w-3xl mx-auto mb-12">
             <GlowStat value="4" label="Sensors" progress={scrollYProgress} range={[0.50, 0.56]} />
-            <div className="hidden md:block w-px h-10 bg-white/[0.08]" />
             <GlowStat value="<45g" label="Weight" progress={scrollYProgress} range={[0.53, 0.59]} />
-            <div className="hidden md:block w-px h-10 bg-white/[0.08]" />
             <GlowStat value="$46" label="Per unit" progress={scrollYProgress} range={[0.56, 0.62]} />
-            <div className="hidden md:block w-px h-10 bg-white/[0.08]" />
             <GlowStat value="5s" label="Cycles" progress={scrollYProgress} range={[0.59, 0.65]} />
           </div>
 
