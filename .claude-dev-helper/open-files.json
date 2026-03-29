@@ -1,35 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
-    "timestamp": 1774533198015,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
-    "timestamp": 1774533204638,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
-    "timestamp": 1774533217086,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774541605523,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774541606684,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
     "timestamp": 1774541608126,
     "focus": false,
@@ -56,6 +26,36 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/layout.tsx",
     "timestamp": 1774816943069,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/HeroReveal.tsx",
+    "timestamp": 1774824011754,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/HeroReveal.tsx",
+    "timestamp": 1774824018693,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Roadmap.tsx",
+    "timestamp": 1774824023615,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774824028022,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/PCBDesign.tsx",
+    "timestamp": 1774824037188,
     "focus": false,
     "openLocation": 1
   }
