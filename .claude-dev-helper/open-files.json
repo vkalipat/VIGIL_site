@@ -1,29 +1,5 @@
 [
   {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/headband-vault/site/components/ParticleText.tsx",
-    "timestamp": 1774401219625,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/globals.css",
-    "timestamp": 1774404461794,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/CursorGlow.tsx",
-    "timestamp": 1774404475472,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/CursorGlow.tsx",
-    "timestamp": 1774404808198,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/app/globals.css",
     "timestamp": 1774404809966,
     "focus": false,
@@ -56,6 +32,30 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/ParticleText.tsx",
     "timestamp": 1774533217086,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774541605523,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774541606684,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774541608126,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774541610326,
     "focus": false,
     "openLocation": 1
   }
