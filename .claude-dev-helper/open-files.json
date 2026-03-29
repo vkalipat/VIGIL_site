@@ -1,12 +1,6 @@
 [
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/CursorGlow.tsx",
-    "timestamp": 1774532171258,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/components/CursorGlow.tsx",
     "timestamp": 1774533190809,
     "focus": false,
     "openLocation": 1
@@ -56,6 +50,12 @@
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Contact.tsx",
     "timestamp": 1774812907008,
+    "focus": false,
+    "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
+    "timestamp": 1774816655099,
     "focus": false,
     "openLocation": 1
   }
