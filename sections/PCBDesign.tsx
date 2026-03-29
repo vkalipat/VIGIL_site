@@ -110,7 +110,7 @@ const item = {
 /* ─── PCB Board Visualization ─── */
 function PCBVisualization() {
   return (
-    <div className="relative w-full aspect-[185/35] max-w-3xl mx-auto">
+    <div className="relative w-full aspect-[185/35] sm:aspect-[185/35] max-w-3xl mx-auto min-h-[60px]">
       {/* Board outline */}
       <motion.div
         className="absolute inset-0 rounded-full border border-[#00D4AA]/30 bg-[#00D4AA]/[0.03]"

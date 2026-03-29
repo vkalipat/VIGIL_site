@@ -162,11 +162,11 @@ export default function HeroReveal() {
           />
 
           {/* Stats — big monospaced numbers with glow */}
-          <div className="flex items-center justify-center gap-10 md:gap-16 mb-12">
+          <div className="grid grid-cols-2 gap-6 md:flex md:items-center md:justify-center md:gap-16 mb-12">
             <GlowStat value="4" label="Sensors" progress={scrollYProgress} range={[0.50, 0.56]} />
-            <div className="w-px h-10 bg-white/[0.08]" />
+            <div className="hidden md:block w-px h-10 bg-white/[0.08]" />
             <GlowStat value="<45g" label="Weight" progress={scrollYProgress} range={[0.53, 0.59]} />
-            <div className="w-px h-10 bg-white/[0.08]" />
+            <div className="hidden md:block w-px h-10 bg-white/[0.08]" />
             <GlowStat value="$46" label="Per unit" progress={scrollYProgress} range={[0.56, 0.62]} />
             <div className="hidden md:block w-px h-10 bg-white/[0.08]" />
             <GlowStat value="5s" label="Cycles" progress={scrollYProgress} range={[0.59, 0.65]} />
@@ -175,12 +175,12 @@ export default function HeroReveal() {
           {/* CTAs */}
           <motion.div
             style={{ opacity: ctaOpacity, y: ctaY }}
-            className="flex items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
           >
             <MagneticButton>
               <HoverGlowButton
                 href="/team#contact"
-                className="bg-[#00D4AA] text-[#0A0A0F] font-semibold px-8 py-3.5 rounded-lg hover:shadow-[0_0_30px_rgba(0,212,170,0.3)] hover:brightness-110 transition-all duration-300"
+                className="bg-[#00D4AA] text-[#0A0A0F] font-semibold px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg hover:shadow-[0_0_30px_rgba(0,212,170,0.3)] hover:brightness-110 transition-all duration-300 text-sm sm:text-base"
               >
                 Request a Pilot
               </HoverGlowButton>
@@ -188,7 +188,7 @@ export default function HeroReveal() {
             <MagneticButton>
               <a
                 href="/workflow"
-                className="border border-white/[0.15] text-[#FAFAFA] px-8 py-3.5 rounded-lg hover:bg-white/[0.05] hover:border-white/[0.25] transition-all duration-300"
+                className="border border-white/[0.15] text-[#FAFAFA] px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg hover:bg-white/[0.05] hover:border-white/[0.25] transition-all duration-300 text-sm sm:text-base"
               >
                 Explore Workflow
               </a>

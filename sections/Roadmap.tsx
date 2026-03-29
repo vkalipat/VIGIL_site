@@ -180,7 +180,7 @@ export default function Roadmap() {
                 </h2>
 
                 <div className="flex items-baseline mb-1">
-                  <span className="text-[clamp(4rem,12vw,9rem)] font-bold tabular-nums tracking-tighter leading-none text-[#FAFAFA]">
+                  <span className="text-[clamp(2.5rem,10vw,9rem)] font-bold tabular-nums tracking-tighter leading-none text-[#FAFAFA]">
                     {bedDisplay}
                   </span>
                   <span className="text-[clamp(1.2rem,3vw,2.5rem)] font-bold text-[#00D4AA]/20 ml-1 leading-none">
