@@ -130,9 +130,16 @@ export default function Hero() {
       {/* VIGIL title */}
       <h1
         ref={titleRef}
-        className="absolute inset-0 z-20 flex items-start justify-center pt-[25vh] pointer-events-none"
+        className="absolute inset-0 z-20 flex items-start justify-center pt-[20vh] pointer-events-none"
       >
-        <span className="font-mono text-[12vw] font-bold tracking-[0.15em] text-white/90">
+        <span
+          className="text-[15vw] font-extrabold tracking-tight leading-none"
+          style={{
+            background: "linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.5) 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
           VIGIL
         </span>
       </h1>
