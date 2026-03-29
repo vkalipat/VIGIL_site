@@ -214,15 +214,6 @@ export default function Contact() {
                     vkalipat08@gmail.com
                   </span>
                 </a>
-                <a
-                  href="tel:4706558183"
-                  className="flex items-center gap-3 group"
-                >
-                  <Phone className="w-4 h-4 text-zinc-600 group-hover:text-[#00D4AA] transition-colors" />
-                  <span className="text-sm text-zinc-400 group-hover:text-[#FAFAFA] transition-colors">
-                    (470) 655-8183
-                  </span>
-                </a>
                 <div className="flex items-center gap-3">
                   <MapPin className="w-4 h-4 text-zinc-600" />
                   <span className="text-sm text-zinc-400">
