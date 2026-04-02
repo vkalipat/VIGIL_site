@@ -1,24 +1,6 @@
 [
   {
     "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774541608126,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
-    "timestamp": 1774541610326,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Contact.tsx",
-    "timestamp": 1774812907008,
-    "focus": false,
-    "openLocation": 1
-  },
-  {
-    "filePath": "/Users/vedantk/Documents/final VIGIL site/site/sections/Hero.tsx",
     "timestamp": 1774816655099,
     "focus": false,
     "openLocation": 1
@@ -58,5 +40,23 @@
     "timestamp": 1774824037188,
     "focus": false,
     "openLocation": 1
+  },
+  {
+    "filePath": "/Users/vedantk/.claude/projects/-Users-vedantk-Documents-VIGIL-site/memory/project_obsidian_vault.md",
+    "timestamp": 1774827441485,
+    "focus": false,
+    "openLocation": 0
+  },
+  {
+    "filePath": "/Users/vedantk/.claude/projects/-Users-vedantk-Documents-VIGIL-site/memory/MEMORY.md",
+    "timestamp": 1774827446552,
+    "focus": false,
+    "openLocation": 0
+  },
+  {
+    "filePath": "/Users/vedantk/Documents/VIGIL_site/sections/HeroReveal.tsx",
+    "timestamp": 1774827576778,
+    "focus": false,
+    "openLocation": 0
   }
 ]
