@@ -18,25 +18,21 @@ const DEPLOYMENT_STATS = [
   {
     value: "4",
     label: "Sensors",
-    detail: "Four signals in a single lightweight wearable.",
     range: [0.54, 0.6] as [number, number],
   },
   {
     value: "<45g",
     label: "Weight",
-    detail: "Comfortable enough for long sessions and fast turnover.",
     range: [0.58, 0.64] as [number, number],
   },
   {
     value: "$46",
     label: "Per unit",
-    detail: "Priced for ward-scale rollout, not just premium beds.",
     range: [0.62, 0.68] as [number, number],
   },
   {
     value: "5s",
     label: "Refresh",
-    detail: "Continuous readouts instead of long gaps between checks.",
     range: [0.66, 0.72] as [number, number],
   },
 ];
@@ -68,97 +64,79 @@ function RevealWord({
 }
 
 function CadenceRow({
-  eyebrow,
+  label,
   value,
-  description,
+  meta,
   emphasis = false,
   progress,
   range,
 }: {
-  eyebrow: string;
+  label: string;
   value: string;
-  description: string;
+  meta: string;
   emphasis?: boolean;
   progress: MotionValue<number>;
   range: [number, number];
 }) {
   const opacity = useTransform(progress, range, [0, 1]);
-  const x = useTransform(progress, range, [emphasis ? 20 : -20, 0]);
-  const trackOpacity = useTransform(progress, range, [0.15, 1]);
+  const y = useTransform(progress, range, [16, 0]);
+  const trackOpacity = useTransform(progress, range, [0.2, 1]);
 
   return (
     <motion.div
-      style={{ opacity, x }}
-      className={cn(
-        "relative overflow-hidden rounded-[28px] border p-5 md:p-6",
-        emphasis
-          ? "border-[#00D4AA]/20 bg-[radial-gradient(circle_at_top_left,rgba(0,212,170,0.14),transparent_55%),rgba(0,212,170,0.05)]"
-          : "border-white/[0.08] bg-white/[0.03]"
-      )}
+      style={{ opacity, y }}
+      className="grid gap-3 py-4 md:grid-cols-[8rem_minmax(0,1fr)_auto] md:items-center"
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div>
-          <p
-            className={cn(
-              "font-mono text-[10px] uppercase tracking-[0.28em]",
-              emphasis ? "text-[#7AE7D4]" : "text-zinc-500"
-            )}
-          >
-            {eyebrow}
-          </p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-[#FAFAFA] md:text-4xl">
-            {value}
-          </p>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-zinc-400">
-            {description}
-          </p>
-        </div>
-
-        <div
-          className={cn(
-            "inline-flex rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em]",
-            emphasis
-              ? "border-[#00D4AA]/30 bg-[#00D4AA]/10 text-[#7AE7D4]"
-              : "border-white/[0.08] bg-white/[0.03] text-zinc-400"
-          )}
-        >
-          {emphasis ? "Continuous feed" : "Spot checks"}
-        </div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500">
+        {label}
       </div>
 
-      <motion.div style={{ opacity: trackOpacity }} className="mt-5">
-        <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
-          <span>{emphasis ? "Coverage" : "Coverage gaps"}</span>
-          <span>{emphasis ? "17,280 refreshes/day" : "3-6 checks/day"}</span>
-        </div>
-
+      <div>
         <div
           className={cn(
-            "mt-3 grid grid-cols-12 gap-1.5 rounded-2xl border px-3 py-3",
-            emphasis
-              ? "border-[#00D4AA]/15 bg-black/25"
-              : "border-white/[0.06] bg-black/20"
+            "flex flex-wrap items-baseline gap-x-3 gap-y-1",
+            emphasis ? "text-[#FAFAFA]" : "text-zinc-200"
           )}
         >
-          {TRACK_MARKS.map((index) => {
-            const isSparsePulse = index === 0 || index === 5 || index === 10;
-
-            return (
-              <div
-                key={index}
-                className={cn(
-                  "h-2 rounded-full",
-                  emphasis
-                    ? "bg-gradient-to-r from-[#00D4AA]/25 via-[#00D4AA]/55 to-[#00D4AA]"
-                    : isSparsePulse
-                      ? "bg-white/25"
-                      : "bg-white/[0.05]"
-                )}
-              />
-            );
-          })}
+          <span
+            className={cn(
+              "text-2xl font-semibold tracking-tight md:text-3xl",
+              emphasis ? "text-[#00D4AA]" : "text-[#FAFAFA]"
+            )}
+          >
+            {value}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500">
+            {meta}
+          </span>
         </div>
-      </motion.div>
+
+        <motion.div style={{ opacity: trackOpacity }} className="mt-3">
+          <div className="grid grid-cols-12 gap-1.5">
+            {TRACK_MARKS.map((index) => {
+              const isSparsePulse = index === 1 || index === 6 || index === 10;
+
+              return (
+                <div
+                  key={index}
+                  className={cn(
+                    "h-[3px] rounded-full",
+                    emphasis
+                      ? "bg-gradient-to-r from-[#00D4AA]/20 via-[#00D4AA]/55 to-[#00D4AA]"
+                      : isSparsePulse
+                        ? "bg-white/35"
+                        : "bg-white/[0.06]"
+                  )}
+                />
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500 md:text-right">
+        {emphasis ? "17,280/day" : "3-6/day"}
+      </div>
     </motion.div>
   );
 }
@@ -166,32 +144,25 @@ function CadenceRow({
 function DeploymentStat({
   value,
   label,
-  detail,
   progress,
   range,
 }: {
   value: string;
   label: string;
-  detail: string;
   progress: MotionValue<number>;
   range: [number, number];
 }) {
   const opacity = useTransform(progress, range, [0, 1]);
-  const y = useTransform(progress, range, [18, 0]);
+  const y = useTransform(progress, range, [14, 0]);
 
   return (
-    <motion.div
-      style={{ opacity, y }}
-      className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4"
-    >
-      <div className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-      <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500">
-        {label}
-      </p>
-      <p className="mt-4 text-3xl font-semibold tracking-tight text-[#FAFAFA] md:text-[2.5rem]">
+    <motion.div style={{ opacity, y }} className="space-y-2">
+      <p className="text-2xl font-semibold tracking-tight text-[#FAFAFA] md:text-3xl">
         {value}
       </p>
-      <p className="mt-2 text-sm leading-relaxed text-zinc-400">{detail}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+        {label}
+      </p>
     </motion.div>
   );
 }
@@ -206,9 +177,9 @@ export default function HeroReveal() {
   const vigilOpacity = useTransform(scrollYProgress, [0.05, 0.12], [0, 1]);
   const vigilScale = useTransform(scrollYProgress, [0.05, 0.12], [0.9, 1]);
   const panelOpacity = useTransform(scrollYProgress, [0.34, 0.42], [0, 1]);
-  const panelY = useTransform(scrollYProgress, [0.34, 0.42], [48, 0]);
-  const ctaOpacity = useTransform(scrollYProgress, [0.72, 0.78], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.72, 0.78], [20, 0]);
+  const panelY = useTransform(scrollYProgress, [0.34, 0.42], [36, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.68, 0.74], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.68, 0.74], [16, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
@@ -252,109 +223,77 @@ export default function HeroReveal() {
 
           <motion.div
             style={{ opacity: panelOpacity, y: panelY }}
-            className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[32px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.02)_100%)] p-4 text-left shadow-[0_32px_120px_rgba(0,0,0,0.45)] sm:p-6 md:p-8"
+            className="mx-auto mt-8 max-w-4xl text-left"
           >
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute left-0 top-0 h-48 w-48 rounded-full bg-[#00D4AA]/10 blur-3xl" />
-              <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#00D4AA]/8 blur-[120px]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] px-3 py-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-400">
+                Monitoring gap
+              </span>
             </div>
 
-            <div className="relative grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]" />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-400">
-                    Monitoring gap
-                  </span>
-                </div>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-zinc-400 md:text-base">
+              General ward patients are monitored every 4-8 hours. VIGIL
+              monitors every 5 seconds. Four sensors. One headband. Under $50.
+            </p>
 
-                <h3 className="mt-5 max-w-xl text-2xl font-semibold leading-[1.05] tracking-tight text-[#FAFAFA] md:text-[2rem]">
-                  The issue isn&apos;t signal quality. It&apos;s the hours
-                  between checks.
-                </h3>
+            <div className="mt-6 border-y border-white/[0.08]">
+              <CadenceRow
+                label="General ward"
+                value="Every 4-8 hours"
+                meta="Spot checks"
+                progress={scrollYProgress}
+                range={[0.44, 0.52]}
+              />
+              <div className="border-t border-white/[0.08]" />
+              <CadenceRow
+                label="VIGIL"
+                value="Every 5 seconds"
+                meta="Continuous monitoring"
+                emphasis
+                progress={scrollYProgress}
+                range={[0.49, 0.57]}
+              />
+            </div>
 
-                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-400 md:text-base">
-                  General ward patients are usually checked every 4-8 hours.
-                  VIGIL refreshes every 5 seconds, closing the blind spots that
-                  intermittent rounds leave behind.
-                </p>
-
-                <div className="mt-6 grid gap-4">
-                  <CadenceRow
-                    eyebrow="Typical ward cadence"
-                    value="Every 4-8 hours"
-                    description="Manual spot checks create long windows where patient status can drift without a fresh read."
-                    progress={scrollYProgress}
-                    range={[0.44, 0.52]}
-                  />
-                  <CadenceRow
-                    eyebrow="VIGIL cadence"
-                    value="Every 5 seconds"
-                    description="Continuous monitoring keeps new data flowing fast enough to surface deterioration before the next round."
-                    emphasis
-                    progress={scrollYProgress}
-                    range={[0.49, 0.57]}
-                  />
-                </div>
-              </div>
-
-              <div className="relative rounded-[28px] border border-white/[0.08] bg-black/20 p-4 sm:p-5">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00D4AA]/40 to-transparent" />
-                <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500">
-                  Ward-scale deployment
-                </p>
-                <h4 className="mt-3 max-w-sm text-lg font-medium tracking-tight text-[#FAFAFA]">
-                  ICU-grade coverage without ICU-only hardware economics.
-                </h4>
-
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {DEPLOYMENT_STATS.map((stat) => (
-                    <DeploymentStat
-                      key={stat.label}
-                      value={stat.value}
-                      label={stat.label}
-                      detail={stat.detail}
-                      progress={scrollYProgress}
-                      range={stat.range}
-                    />
-                  ))}
-                </div>
-              </div>
+            <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-5 md:grid-cols-4">
+              {DEPLOYMENT_STATS.map((stat) => (
+                <DeploymentStat
+                  key={stat.label}
+                  value={stat.value}
+                  label={stat.label}
+                  progress={scrollYProgress}
+                  range={stat.range}
+                />
+              ))}
             </div>
 
             <motion.div
               style={{ opacity: ctaOpacity, y: ctaY }}
-              className="relative mt-8 flex flex-col gap-4 border-t border-white/[0.08] pt-6 md:flex-row md:items-center md:justify-between"
+              className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center"
             >
-              <p className="max-w-md text-sm leading-relaxed text-zinc-400">
-                Built to give general floors continuous coverage without the
-                cost, weight, or workflow burden of traditional bedside setups.
-              </p>
-
-              <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
-                <MagneticButton>
-                  <HoverGlowButton
-                    href="/team#contact"
-                    className="rounded-lg bg-[#00D4AA] px-6 py-3 text-sm font-semibold text-[#0A0A0F] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_30px_rgba(0,212,170,0.3)] sm:px-8 sm:py-3.5 sm:text-base"
-                  >
-                    Request a Pilot
-                  </HoverGlowButton>
-                </MagneticButton>
-                <MagneticButton>
-                  <a
-                    href="/workflow"
-                    className="rounded-lg border border-white/[0.15] px-6 py-3 text-sm text-[#FAFAFA] transition-all duration-300 hover:border-white/[0.25] hover:bg-white/[0.05] sm:px-8 sm:py-3.5 sm:text-base"
-                  >
-                    Explore Workflow
-                  </a>
-                </MagneticButton>
-              </div>
+              <MagneticButton>
+                <HoverGlowButton
+                  href="/team#contact"
+                  className="rounded-lg bg-[#00D4AA] px-6 py-3 text-sm font-semibold text-[#0A0A0F] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_30px_rgba(0,212,170,0.3)] sm:px-8 sm:py-3.5 sm:text-base"
+                >
+                  Request a Pilot
+                </HoverGlowButton>
+              </MagneticButton>
+              <MagneticButton>
+                <a
+                  href="/workflow"
+                  className="rounded-lg border border-white/[0.15] px-6 py-3 text-sm text-[#FAFAFA] transition-all duration-300 hover:border-white/[0.25] hover:bg-white/[0.05] sm:px-8 sm:py-3.5 sm:text-base"
+                >
+                  Explore Workflow
+                </a>
+              </MagneticButton>
             </motion.div>
           </motion.div>
         </div>
       </div>
 
-      <div className="h-[170vh]" aria-hidden="true" />
+      <div className="h-[160vh]" aria-hidden="true" />
     </div>
   );
 }
