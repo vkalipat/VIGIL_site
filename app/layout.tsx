@@ -91,7 +91,7 @@ export default function RootLayout({
                 },
                 contactPoint: {
                   "@type": "ContactPoint",
-                  email: "vkalipat08@gmail.com",
+                  email: "support@vigilhealth.us",
                   telephone: "+1-470-655-8183",
                   contactType: "sales",
                 },
