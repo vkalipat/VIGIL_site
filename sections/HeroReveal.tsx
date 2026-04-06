@@ -10,34 +10,23 @@ import {
 import MagneticButton from "@/components/MagneticButton";
 import { HoverGlowButton } from "@/components/ui/hover-glow-button";
 import { GooeyText } from "@/components/ui/gooey-text";
-import { cn } from "@/lib/utils";
 
 const TAGLINE = "Continuous ICU-grade monitoring at ultra-low cost.".split(" ");
-const TRACK_MARKS = Array.from({ length: 12 }, (_, index) => index);
-const DEPLOYMENT_STATS = [
-  {
-    value: "4",
-    label: "Sensors",
-    range: [0.54, 0.6] as [number, number],
-  },
-  {
-    value: "<45g",
-    label: "Weight",
-    range: [0.58, 0.64] as [number, number],
-  },
-  {
-    value: "$46",
-    label: "Per unit",
-    range: [0.62, 0.68] as [number, number],
-  },
-  {
-    value: "5s",
-    label: "Refresh",
-    range: [0.66, 0.72] as [number, number],
-  },
+
+const STATS = [
+  { value: "4", label: "Sensors", range: [0.56, 0.62] as [number, number] },
+  { value: "<45g", label: "Weight", range: [0.58, 0.64] as [number, number] },
+  { value: "$46", label: "Per unit", range: [0.60, 0.66] as [number, number] },
+  { value: "5s", label: "Refresh", range: [0.62, 0.68] as [number, number] },
 ];
 
-/* ─── Scroll-linked word that lights up ─── */
+/* deterministic pseudo-random: same value every render for a given index */
+function hash(i: number, seed = 0) {
+  const x = Math.sin(i * 127.1 + seed * 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+/* ── Word-reveal used in the tagline ──────────────────────────── */
 function RevealWord({
   children,
   progress,
@@ -63,110 +52,102 @@ function RevealWord({
   );
 }
 
-function CadenceRow({
-  label,
-  value,
-  meta,
-  emphasis = false,
+/* ── Animated signal bars ─────────────────────────────────────── */
+const BAR_COUNT = 48;
+
+function SignalBars({
+  type,
   progress,
   range,
 }: {
-  label: string;
+  type: "sparse" | "continuous";
+  progress: MotionValue<number>;
+  range: [number, number];
+}) {
+  const opacity = useTransform(progress, range, [0, 1]);
+  const y = useTransform(progress, range, [20, 0]);
+
+  return (
+    <motion.div
+      style={{ opacity, y }}
+      className="relative flex h-14 items-end gap-[1.5px] overflow-hidden"
+    >
+      {Array.from({ length: BAR_COUNT }).map((_, i) => {
+        if (type === "sparse") {
+          const active = i % 12 === 0;
+          const h = active ? 30 + hash(i) * 50 : 5 + hash(i, 1) * 5;
+          return (
+            <div
+              key={i}
+              className="flex-1 rounded-t-[1px]"
+              style={{
+                height: `${h}%`,
+                transformOrigin: "bottom",
+                backgroundColor: active
+                  ? "rgba(161,161,170,0.6)"
+                  : "rgba(255,255,255,0.03)",
+                animation: active
+                  ? `hero-bar 2.8s ease-in-out ${hash(i, 2) * 2}s infinite alternate`
+                  : "none",
+              }}
+            />
+          );
+        }
+        const h = 20 + hash(i) * 70;
+        const o = 0.35 + hash(i, 1) * 0.65;
+        return (
+          <div
+            key={i}
+            className="flex-1 rounded-t-[1px]"
+            style={{
+              height: `${h}%`,
+              transformOrigin: "bottom",
+              backgroundColor: `rgba(0,212,170,${o})`,
+              animation: `hero-bar ${0.5 + hash(i, 2) * 0.7}s ease-in-out ${hash(i, 3) * 0.6}s infinite alternate`,
+            }}
+          />
+        );
+      })}
+
+      {type === "continuous" && (
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#00D4AA]/[0.06] to-transparent" />
+      )}
+    </motion.div>
+  );
+}
+
+/* ── Stat card ────────────────────────────────────────────────── */
+function StatCard({
+  value,
+  label,
+  progress,
+  range,
+}: {
   value: string;
-  meta: string;
-  emphasis?: boolean;
+  label: string;
   progress: MotionValue<number>;
   range: [number, number];
 }) {
   const opacity = useTransform(progress, range, [0, 1]);
   const y = useTransform(progress, range, [16, 0]);
-  const trackOpacity = useTransform(progress, range, [0.2, 1]);
 
   return (
     <motion.div
       style={{ opacity, y }}
-      className="grid gap-3 py-4 md:grid-cols-[8rem_minmax(0,1fr)_auto] md:items-center"
+      className="group relative overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 text-center transition-colors duration-500 hover:border-[#00D4AA]/20"
     >
-      <div className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-500">
-        {label}
-      </div>
-
-      <div>
-        <div
-          className={cn(
-            "flex flex-wrap items-baseline gap-x-3 gap-y-1",
-            emphasis ? "text-[#FAFAFA]" : "text-zinc-200"
-          )}
-        >
-          <span
-            className={cn(
-              "text-2xl font-semibold tracking-tight md:text-3xl",
-              emphasis ? "text-[#00D4AA]" : "text-[#FAFAFA]"
-            )}
-          >
-            {value}
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500">
-            {meta}
-          </span>
-        </div>
-
-        <motion.div style={{ opacity: trackOpacity }} className="mt-3">
-          <div className="grid grid-cols-12 gap-1.5">
-            {TRACK_MARKS.map((index) => {
-              const isSparsePulse = index === 1 || index === 6 || index === 10;
-
-              return (
-                <div
-                  key={index}
-                  className={cn(
-                    "h-[3px] rounded-full",
-                    emphasis
-                      ? "bg-gradient-to-r from-[#00D4AA]/20 via-[#00D4AA]/55 to-[#00D4AA]"
-                      : isSparsePulse
-                        ? "bg-white/35"
-                        : "bg-white/[0.06]"
-                  )}
-                />
-              );
-            })}
-          </div>
-        </motion.div>
-      </div>
-
-      <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500 md:text-right">
-        {emphasis ? "17,280/day" : "3-6/day"}
-      </div>
-    </motion.div>
-  );
-}
-
-function DeploymentStat({
-  value,
-  label,
-  progress,
-  range,
-}: {
-  value: string;
-  label: string;
-  progress: MotionValue<number>;
-  range: [number, number];
-}) {
-  const opacity = useTransform(progress, range, [0, 1]);
-  const y = useTransform(progress, range, [14, 0]);
-
-  return (
-    <motion.div style={{ opacity, y }} className="space-y-2">
-      <p className="text-2xl font-semibold tracking-tight text-[#FAFAFA] md:text-3xl">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00D4AA]/25 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <p className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
         {value}
       </p>
-      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
         {label}
       </p>
     </motion.div>
   );
 }
 
+/* ── Main component ───────────────────────────────────────────── */
 export default function HeroReveal() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -177,19 +158,26 @@ export default function HeroReveal() {
   const vigilOpacity = useTransform(scrollYProgress, [0.05, 0.12], [0, 1]);
   const vigilScale = useTransform(scrollYProgress, [0.05, 0.12], [0.9, 1]);
   const panelOpacity = useTransform(scrollYProgress, [0.34, 0.42], [0, 1]);
-  const panelY = useTransform(scrollYProgress, [0.34, 0.42], [36, 0]);
-  const ctaOpacity = useTransform(scrollYProgress, [0.68, 0.74], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.68, 0.74], [16, 0]);
+  const panelY = useTransform(scrollYProgress, [0.34, 0.42], [28, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.66, 0.74], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.66, 0.74], [12, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `@keyframes hero-bar{0%{transform:scaleY(1)}100%{transform:scaleY(.35)}}`,
+        }}
+      />
+
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
         <div className="mx-auto w-full max-w-6xl px-6 py-20 text-center md:py-24">
+          {/* VIGIL gooey text */}
           <motion.div
             style={{ opacity: vigilOpacity, scale: vigilScale }}
             className="mb-1"
           >
-            <div className="h-[90px] md:h-[140px] flex items-center justify-center">
+            <div className="flex h-[90px] items-center justify-center md:h-[140px]">
               <GooeyText
                 texts={["MEET", "VIGIL"]}
                 morphTime={1.2}
@@ -199,16 +187,15 @@ export default function HeroReveal() {
             </div>
           </motion.div>
 
+          {/* Tagline word reveal */}
           <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[5.5rem]">
             {TAGLINE.map((word, i) => {
               const start = 0.18 + (i / TAGLINE.length) * 0.15;
-              const end = start + 0.04;
-
               return (
                 <RevealWord
                   key={i}
                   progress={scrollYProgress}
-                  range={[start, end]}
+                  range={[start, start + 0.04]}
                   className={
                     word === "monitoring"
                       ? "text-[#00D4AA]"
@@ -221,61 +208,91 @@ export default function HeroReveal() {
             })}
           </h2>
 
+          {/* ── Monitoring comparison panel ── */}
           <motion.div
             style={{ opacity: panelOpacity, y: panelY }}
-            className="mx-auto mt-8 max-w-4xl text-left"
+            className="mx-auto mt-10 max-w-4xl"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] px-3 py-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-zinc-400">
-                Monitoring gap
-              </span>
-            </div>
-
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-zinc-400 md:text-base">
-              General ward patients are monitored every 4-8 hours. VIGIL
+            <p className="mx-auto max-w-3xl text-sm leading-relaxed text-zinc-400 md:text-base">
+              General ward patients are monitored every 4–8 hours. VIGIL
               monitors every 5 seconds. Four sensors. One headband. Under $50.
             </p>
 
-            <div className="mt-6 border-y border-white/[0.08]">
-              <CadenceRow
-                label="General ward"
-                value="Every 4-8 hours"
-                meta="Spot checks"
-                progress={scrollYProgress}
-                range={[0.44, 0.52]}
-              />
-              <div className="border-t border-white/[0.08]" />
-              <CadenceRow
-                label="VIGIL"
-                value="Every 5 seconds"
-                meta="Continuous monitoring"
-                emphasis
-                progress={scrollYProgress}
-                range={[0.49, 0.57]}
-              />
+            {/* Signal comparison */}
+            <div className="mt-10 space-y-3">
+              {/* General Ward */}
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] p-5 md:p-6">
+                <div className="mb-4 flex items-baseline justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
+                    General Ward
+                  </span>
+                  <div className="flex items-baseline gap-2.5">
+                    <span className="text-2xl font-semibold tracking-tight text-[#FAFAFA] md:text-3xl">
+                      4–8h
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+                      spot checks
+                    </span>
+                  </div>
+                </div>
+                <SignalBars
+                  type="sparse"
+                  progress={scrollYProgress}
+                  range={[0.42, 0.50]}
+                />
+                <p className="mt-3 text-right font-mono text-[10px] tracking-[0.2em] text-zinc-600">
+                  3–6 readings / day
+                </p>
+              </div>
+
+              {/* VIGIL */}
+              <div className="rounded-2xl border border-[#00D4AA]/[0.12] bg-[#00D4AA]/[0.03] p-5 shadow-[0_0_40px_-10px_rgba(0,212,170,0.12)] md:p-6">
+                <div className="mb-4 flex items-baseline justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#7AE7D4]">
+                    VIGIL
+                  </span>
+                  <div className="flex items-baseline gap-2.5">
+                    <span className="text-2xl font-semibold tracking-tight text-[#00D4AA] md:text-3xl">
+                      5s
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#00D4AA]/50">
+                      continuous
+                    </span>
+                  </div>
+                </div>
+                <SignalBars
+                  type="continuous"
+                  progress={scrollYProgress}
+                  range={[0.48, 0.56]}
+                />
+                <p className="mt-3 text-right font-mono text-[10px] tracking-[0.2em] text-[#00D4AA]/40">
+                  17,280 readings / day
+                </p>
+              </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-5 md:grid-cols-4">
-              {DEPLOYMENT_STATS.map((stat) => (
-                <DeploymentStat
-                  key={stat.label}
-                  value={stat.value}
-                  label={stat.label}
+            {/* Stat cards */}
+            <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+              {STATS.map((s) => (
+                <StatCard
+                  key={s.label}
+                  value={s.value}
+                  label={s.label}
                   progress={scrollYProgress}
-                  range={stat.range}
+                  range={s.range}
                 />
               ))}
             </div>
 
+            {/* CTA */}
             <motion.div
               style={{ opacity: ctaOpacity, y: ctaY }}
-              className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center"
+              className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
             >
               <MagneticButton>
                 <HoverGlowButton
                   href="/team#contact"
-                  className="rounded-lg bg-[#00D4AA] px-6 py-3 text-sm font-semibold text-[#0A0A0F] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_30px_rgba(0,212,170,0.3)] sm:px-8 sm:py-3.5 sm:text-base"
+                  className="rounded-full bg-[#00D4AA] px-5 py-2.5 text-sm font-semibold text-[#0A0A0F] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_24px_rgba(0,212,170,0.25)]"
                 >
                   Request a Pilot
                 </HoverGlowButton>
@@ -283,7 +300,7 @@ export default function HeroReveal() {
               <MagneticButton>
                 <a
                   href="/workflow"
-                  className="rounded-lg border border-white/[0.15] px-6 py-3 text-sm text-[#FAFAFA] transition-all duration-300 hover:border-white/[0.25] hover:bg-white/[0.05] sm:px-8 sm:py-3.5 sm:text-base"
+                  className="px-3 py-2 text-sm text-zinc-300 transition-colors duration-300 hover:text-[#FAFAFA]"
                 >
                   Explore Workflow
                 </a>
@@ -293,7 +310,7 @@ export default function HeroReveal() {
         </div>
       </div>
 
-      <div className="h-[160vh]" aria-hidden="true" />
+      <div className="h-[150vh]" aria-hidden="true" />
     </div>
   );
 }
