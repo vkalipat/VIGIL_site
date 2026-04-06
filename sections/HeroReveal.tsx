@@ -9,7 +9,6 @@ import {
 } from "framer-motion";
 import MagneticButton from "@/components/MagneticButton";
 import { HoverGlowButton } from "@/components/ui/hover-glow-button";
-import { GooeyText } from "@/components/ui/gooey-text";
 
 const TAGLINE = "Continuous ICU-grade monitoring at ultra-low cost.".split(" ");
 
@@ -155,8 +154,6 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const vigilOpacity = useTransform(scrollYProgress, [0.05, 0.12], [0, 1]);
-  const vigilScale = useTransform(scrollYProgress, [0.05, 0.12], [0.9, 1]);
   const panelOpacity = useTransform(scrollYProgress, [0.34, 0.42], [0, 1]);
   const panelY = useTransform(scrollYProgress, [0.34, 0.42], [28, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0.66, 0.74], [0, 1]);
@@ -172,21 +169,6 @@ export default function HeroReveal() {
 
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
         <div className="mx-auto w-full max-w-6xl px-6 py-20 text-center md:py-24">
-          {/* VIGIL gooey text */}
-          <motion.div
-            style={{ opacity: vigilOpacity, scale: vigilScale }}
-            className="mb-1"
-          >
-            <div className="flex h-[90px] items-center justify-center md:h-[140px]">
-              <GooeyText
-                texts={["MEET", "VIGIL"]}
-                morphTime={1.2}
-                cooldownTime={0.5}
-                className="h-[90px] md:h-[140px]"
-              />
-            </div>
-          </motion.div>
-
           {/* Tagline word reveal */}
           <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[5.5rem]">
             {TAGLINE.map((word, i) => {
