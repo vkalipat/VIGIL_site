@@ -82,24 +82,15 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const panelOpacity = useTransform(scrollYProgress, [0.30, 0.38], [0, 1]);
-  const panelY = useTransform(scrollYProgress, [0.30, 0.38], [28, 0]);
-  const compOpacity = useTransform(scrollYProgress, [0.38, 0.46], [0, 1]);
-  const compY = useTransform(scrollYProgress, [0.38, 0.46], [24, 0]);
+  const descOpacity = useTransform(scrollYProgress, [0.30, 0.38], [0, 1]);
+  const descY = useTransform(scrollYProgress, [0.30, 0.38], [20, 0]);
+  const cardOpacity = useTransform(scrollYProgress, [0.38, 0.46], [0, 1]);
+  const cardY = useTransform(scrollYProgress, [0.38, 0.46], [24, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0.62, 0.70], [0, 1]);
   const ctaY = useTransform(scrollYProgress, [0.62, 0.70], [12, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
-      <style
-        dangerouslySetInnerHTML={{
-          __html: [
-            `@keyframes glow-pulse{0%,100%{text-shadow:0 0 20px rgba(0,212,170,0.3)}50%{text-shadow:0 0 40px rgba(0,212,170,0.5),0 0 80px rgba(0,212,170,0.15)}}`,
-            `@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}`,
-          ].join(""),
-        }}
-      />
-
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
         <div className="mx-auto w-full max-w-7xl px-6 py-20 text-center md:py-24">
           {/* Tagline word reveal */}
@@ -125,73 +116,64 @@ export default function HeroReveal() {
 
           {/* Description */}
           <motion.p
-            style={{ opacity: panelOpacity, y: panelY }}
+            style={{ opacity: descOpacity, y: descY }}
             className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-zinc-400 md:text-base"
           >
             General ward patients are monitored every 4–8 hours. VIGIL
             monitors every 5 seconds. Four sensors. One headband. Under $50.
           </motion.p>
 
-          {/* ── Side-by-side comparison ── */}
+          {/* ── Comparison card with border beam ── */}
           <motion.div
-            style={{ opacity: compOpacity, y: compY }}
-            className="mx-auto mt-12 grid max-w-4xl grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-12"
+            style={{ opacity: cardOpacity, y: cardY }}
+            className="mx-auto mt-10 max-w-3xl"
           >
-            {/* General Ward */}
-            <div className="text-right">
-              <p className="text-5xl font-bold tracking-tight text-zinc-300 md:text-7xl">
-                4–8h
-              </p>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
-                General Ward
-              </p>
-              <p className="mt-1 text-xs text-zinc-600">
-                3–6 spot checks per day
-              </p>
-            </div>
+            <div className="relative overflow-hidden rounded-2xl p-px">
+              {/* Spinning conic gradient = border beam */}
+              <div
+                className="absolute -inset-[200px] animate-[spin_8s_linear_infinite]"
+                style={{
+                  background:
+                    "conic-gradient(from 0deg, transparent 0%, transparent 78%, rgba(0,212,170,0.25) 88%, rgba(0,212,170,0.5) 94%, transparent 100%)",
+                }}
+              />
 
-            {/* Animated divider */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="h-10 w-px bg-gradient-to-b from-transparent via-zinc-700 to-transparent md:h-14" />
-              <div className="relative h-2.5 w-2.5">
-                <div className="absolute inset-0 animate-ping rounded-full bg-[#00D4AA] opacity-30" />
-                <div className="relative h-2.5 w-2.5 rounded-full bg-[#00D4AA]" />
+              {/* Card body */}
+              <div className="relative rounded-2xl bg-[#0e0e14] px-8 py-8 md:px-12 md:py-10">
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-10">
+                  {/* General Ward */}
+                  <div className="text-center md:text-right">
+                    <p className="text-4xl font-bold tracking-tight text-zinc-400 md:text-5xl">
+                      4–8h
+                    </p>
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
+                      General Ward
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-600">
+                      3–6 spot checks / day
+                    </p>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="h-12 w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent md:h-16" />
+                  </div>
+
+                  {/* VIGIL */}
+                  <div className="text-center md:text-left">
+                    <p className="text-4xl font-bold tracking-tight text-[#00D4AA] md:text-5xl">
+                      5s
+                    </p>
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.28em] text-[#7AE7D4]">
+                      VIGIL
+                    </p>
+                    <p className="mt-1 text-xs text-[#00D4AA]/40">
+                      17,280 readings / day
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="h-10 w-px bg-gradient-to-b from-transparent via-[#00D4AA]/20 to-transparent md:h-14" />
             </div>
-
-            {/* VIGIL */}
-            <div className="text-left">
-              <p
-                className="text-5xl font-bold tracking-tight text-[#00D4AA] md:text-7xl"
-                style={{ animation: "glow-pulse 3s ease-in-out infinite" }}
-              >
-                5s
-              </p>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.28em] text-[#7AE7D4]">
-                VIGIL
-              </p>
-              <p className="mt-1 text-xs text-[#00D4AA]/40">
-                17,280 continuous readings
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Shimmer line */}
-          <motion.div
-            style={{ opacity: compOpacity }}
-            className="mx-auto mt-10 h-px max-w-3xl"
-            aria-hidden="true"
-          >
-            <div
-              className="h-full w-full"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent 0%, rgba(161,161,170,0.15) 20%, rgba(0,212,170,0.35) 50%, rgba(161,161,170,0.15) 80%, transparent 100%)",
-                backgroundSize: "200% 100%",
-                animation: "shimmer 4s ease-in-out infinite",
-              }}
-            />
           </motion.div>
 
           {/* Stats */}
