@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
   MotionValue,
+  useMotionValueEvent,
   useScroll,
   useTransform,
 } from "framer-motion";
@@ -39,7 +40,7 @@ function RevealWord({
   );
 }
 
-/* ── Slide-in primitives ──────────────────────────────────────── */
+/* ── Slide from left ──────────────────────────────────────────── */
 function SlideFromLeft({
   children,
   progress,
@@ -49,105 +50,111 @@ function SlideFromLeft({
   progress: MotionValue<number>;
   range: [number, number];
 }) {
-  const x = useTransform(progress, range, [-500, 0]);
+  const x = useTransform(progress, range, [-400, 0]);
   const opacity = useTransform(progress, range, [0, 1]);
-  const rotate = useTransform(progress, range, [-1.5, 0]);
-  return (
-    <motion.div style={{ x, opacity, rotate }}>{children}</motion.div>
-  );
+  return <motion.div style={{ x, opacity }}>{children}</motion.div>;
 }
 
-/* ── Flip comparison ──────────────────────────────────────────── */
-const STATES = [
-  {
-    value: "4–8h",
-    label: "General Ward",
-    detail: "3–6 spot checks per day",
-    accent: false,
-  },
-  {
-    value: "5s",
-    label: "With VIGIL",
-    detail: "17,280 continuous readings per day",
-    accent: true,
-  },
-];
+/* ── Scroll-driven flip comparison ────────────────────────────── */
+function ScrollFlipComparison({
+  progress,
+}: {
+  progress: MotionValue<number>;
+}) {
+  const [showVigil, setShowVigil] = useState(false);
 
-function FlipComparison() {
-  const [index, setIndex] = useState(0);
+  /* strikethrough line animates before the flip */
+  const strikeScaleX = useTransform(progress, [0.40, 0.45], [0, 1]);
+  const compOpacity = useTransform(progress, [0.33, 0.38], [0, 1]);
+  const compY = useTransform(progress, [0.33, 0.38], [40, 0]);
 
-  useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % 2), 3500);
-    return () => clearInterval(id);
-  }, []);
-
-  const state = STATES[index];
+  useMotionValueEvent(progress, "change", (v) => {
+    setShowVigil(v > 0.47);
+  });
 
   return (
-    <div className="text-left">
-      <p className="text-sm text-zinc-500">Patients are checked every</p>
+    <motion.div
+      style={{ opacity: compOpacity, y: compY }}
+      className="mt-12 text-center"
+    >
+      <p className="text-base text-zinc-500 md:text-lg">
+        Patients are checked every
+      </p>
 
-      {/* Big flipping number */}
-      <div className="relative mt-2 h-[72px] overflow-hidden md:h-[96px]">
+      {/* Big number with flip */}
+      <div className="relative mx-auto mt-4 inline-block">
         <AnimatePresence mode="wait">
-          <motion.p
-            key={state.value}
-            initial={{ y: 50, opacity: 0, filter: "blur(10px)" }}
-            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-            exit={{ y: -50, opacity: 0, filter: "blur(10px)" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className={`absolute text-6xl font-bold tracking-tight md:text-8xl ${
-              state.accent ? "text-[#00D4AA]" : "text-zinc-400"
-            }`}
-          >
-            {state.value}
-          </motion.p>
+          {!showVigil ? (
+            <motion.div
+              key="ward"
+              initial={{ opacity: 0, scale: 0.9, filter: "blur(8px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)" }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="relative"
+            >
+              <p className="text-7xl font-bold tracking-tight text-zinc-400 md:text-[10rem] md:leading-none">
+                4–8h
+              </p>
+              {/* Strikethrough */}
+              <motion.div
+                style={{ scaleX: strikeScaleX }}
+                className="absolute left-[-4%] right-[-4%] top-[55%] h-[3px] origin-left rounded-full bg-[#00D4AA]/70 md:h-1"
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="vigil"
+              initial={{ opacity: 0, scale: 0.9, filter: "blur(8px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <p className="text-7xl font-bold tracking-tight text-[#00D4AA] md:text-[10rem] md:leading-none">
+                5s
+              </p>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
-      {/* Flipping labels */}
+      {/* Label + detail */}
       <AnimatePresence mode="wait">
-        <motion.div
-          key={state.label}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.35 }}
-          className="mt-1"
-        >
-          <p
-            className={`font-mono text-[10px] uppercase tracking-[0.28em] ${
-              state.accent ? "text-[#7AE7D4]" : "text-zinc-500"
-            }`}
+        {!showVigil ? (
+          <motion.div
+            key="ward-info"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4"
           >
-            {state.label}
-          </p>
-          <p
-            className={`mt-1 text-sm ${
-              state.accent ? "text-[#00D4AA]/50" : "text-zinc-600"
-            }`}
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-zinc-500 md:text-sm">
+              General Ward
+            </p>
+            <p className="mt-1 text-sm text-zinc-600 md:text-base">
+              3–6 spot checks per day
+            </p>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="vigil-info"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="mt-4"
           >
-            {state.detail}
-          </p>
-        </motion.div>
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#7AE7D4] md:text-sm">
+              With VIGIL
+            </p>
+            <p className="mt-1 text-sm text-[#00D4AA]/50 md:text-base">
+              17,280 continuous readings per day
+            </p>
+          </motion.div>
+        )}
       </AnimatePresence>
-
-      {/* Active indicator dots */}
-      <div className="mt-4 flex gap-1.5">
-        {STATES.map((_, i) => (
-          <div
-            key={i}
-            className={`h-1 rounded-full transition-all duration-500 ${
-              i === index
-                ? i === 1
-                  ? "w-6 bg-[#00D4AA]"
-                  : "w-6 bg-zinc-400"
-                : "w-1 bg-zinc-700"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -159,15 +166,15 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const ctaOpacity = useTransform(scrollYProgress, [0.58, 0.66], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.58, 0.66], [20, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.62, 0.70], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.62, 0.70], [20, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
         <div className="relative mx-auto w-full max-w-6xl px-6 py-20 md:py-24">
           {/* Tagline word reveal */}
-          <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-3xl font-bold leading-[1.05] tracking-tight text-center md:text-5xl lg:text-[5.5rem]">
+          <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-center text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[5.5rem]">
             {TAGLINE.map((word, i) => {
               const start = 0.15 + (i / TAGLINE.length) * 0.15;
               return (
@@ -187,39 +194,34 @@ export default function HeroReveal() {
             })}
           </h2>
 
-          {/* ── Flip comparison — slides from left ── */}
-          <SlideFromLeft progress={scrollYProgress} range={[0.33, 0.43]}>
-            <div className="mt-14 flex items-center gap-8 md:gap-12">
-              <div className="hidden h-px flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-zinc-600 md:block" />
-              <FlipComparison />
-            </div>
-          </SlideFromLeft>
+          {/* ── Scroll-driven flip ── */}
+          <ScrollFlipComparison progress={scrollYProgress} />
 
-          {/* ── Device specs — staggered from left ── */}
-          <div className="mt-14 space-y-4">
-            <SlideFromLeft progress={scrollYProgress} range={[0.46, 0.52]}>
+          {/* ── Device specs — slide from left ── */}
+          <div className="mt-16 space-y-5">
+            <SlideFromLeft progress={scrollYProgress} range={[0.50, 0.56]}>
               <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
-                One headband
+                Built with
               </p>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.47, 0.53]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.51, 0.57]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-                  4
+                  4 sensors
                 </span>
                 <span className="text-sm text-zinc-500">
-                  sensors — HR, SpO₂, temperature, respiratory
+                  HR, SpO₂, temperature, respiratory
                 </span>
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.49, 0.55]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.53, 0.59]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-                  &lt;45g
+                  45 grams
                 </span>
                 <span className="text-sm text-zinc-500">
                   lightweight enough to wear all night
@@ -227,14 +229,14 @@ export default function HeroReveal() {
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.51, 0.57]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.55, 0.61]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl">
-                  $46
+                  100x cheaper
                 </span>
                 <span className="text-sm text-[#00D4AA]/50">
-                  per unit — fraction of ICU equipment
+                  than traditional ICU monitoring
                 </span>
               </div>
             </SlideFromLeft>
