@@ -134,12 +134,12 @@ function ScrollFlipComparison({
   const [showVigil, setShowVigil] = useState(false);
 
   /* scratch draws across before the flip */
-  const scratchProgress = useTransform(progress, [0.26, 0.34], [0, 1]);
-  const compOpacity = useTransform(progress, [0.16, 0.22], [0, 1]);
-  const compScale = useTransform(progress, [0.16, 0.22], [0.92, 1]);
+  const scratchProgress = useTransform(progress, [0.35, 0.48], [0, 1]);
+  const compOpacity = useTransform(progress, [0.20, 0.28], [0, 1]);
+  const compScale = useTransform(progress, [0.20, 0.28], [0.92, 1]);
 
   useMotionValueEvent(progress, "change", (v) => {
-    setShowVigil(v > 0.36);
+    setShowVigil(v > 0.50);
   });
 
   return (
@@ -148,7 +148,7 @@ function ScrollFlipComparison({
       <TextReveal
         text="Patients are checked every"
         progress={progress}
-        range={[0.08, 0.16]}
+        range={[0.10, 0.20]}
         className="text-lg text-zinc-500 md:text-xl"
       />
 
@@ -237,8 +237,8 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const ctaOpacity = useTransform(scrollYProgress, [0.54, 0.62], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.54, 0.62], [20, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.78, 0.86], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.78, 0.86], [20, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
@@ -249,13 +249,13 @@ export default function HeroReveal() {
 
           {/* ── Device specs — slide from left ── */}
           <div className="mt-16 space-y-5">
-            <SlideFromLeft progress={scrollYProgress} range={[0.39, 0.45]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.56, 0.64]}>
               <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
                 Built with
               </p>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.40, 0.46]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.58, 0.66]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
@@ -267,7 +267,7 @@ export default function HeroReveal() {
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.42, 0.48]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.62, 0.70]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
@@ -279,7 +279,7 @@ export default function HeroReveal() {
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.44, 0.50]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.66, 0.74]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl">
@@ -317,7 +317,7 @@ export default function HeroReveal() {
         </div>
       </div>
 
-      <div className="h-[150vh]" aria-hidden="true" />
+      <div className="h-[250vh]" aria-hidden="true" />
     </div>
   );
 }
