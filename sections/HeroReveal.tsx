@@ -62,6 +62,78 @@ function WordReveal({
   );
 }
 
+/* ── Specs section — triggers stagger at scroll threshold ─────── */
+const specItem = {
+  hidden: { opacity: 0, x: -60 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
+function SpecsSection({ progress }: { progress: MotionValue<number> }) {
+  const [show, setShow] = useState(false);
+
+  useMotionValueEvent(progress, "change", (v) => {
+    if (v > 0.56 && !show) setShow(true);
+  });
+
+  return (
+    <motion.div
+      className="mt-16 space-y-5 transform-gpu"
+      initial="hidden"
+      animate={show ? "show" : "hidden"}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.15 } },
+      }}
+    >
+      <motion.p
+        className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600"
+        variants={specItem}
+      >
+        Built with
+      </motion.p>
+
+      <motion.div className="flex items-center gap-3" variants={specItem}>
+        <div className="h-px w-8 bg-zinc-700 md:w-16" />
+        <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
+        <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+          4 sensors
+        </span>
+        <span className="text-sm text-zinc-500">
+          HR, SpO₂, temperature, respiratory
+        </span>
+      </motion.div>
+
+      <motion.div className="flex items-center gap-3" variants={specItem}>
+        <div className="h-px w-8 bg-zinc-700 md:w-16" />
+        <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
+        <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+          45 grams
+        </span>
+        <span className="text-sm text-zinc-500">
+          lightweight enough to wear all night
+        </span>
+      </motion.div>
+
+      <motion.div className="flex items-center gap-3" variants={specItem}>
+        <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
+        <div
+          className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]"
+          style={{ boxShadow: "0 0 6px rgba(0,212,170,0.5)" }}
+        />
+        <span
+          className="font-display text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
+          style={{ textShadow: "0 0 12px rgba(0,212,170,0.2)" }}
+        >
+          100x cheaper
+        </span>
+        <span className="text-sm text-[#00D4AA]/50">
+          than traditional ICU monitoring
+        </span>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 /* ── Slide from left ──────────────────────────────────────────── */
 function SlideFromLeft({
   children,
@@ -282,84 +354,8 @@ export default function HeroReveal() {
           {/* ── Scroll-driven flip ── */}
           <ScrollFlipComparison progress={scrollYProgress} />
 
-          {/* ── Device specs — staggered viewport entry ── */}
-          <motion.div
-            className="mt-16 space-y-5"
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={{
-              hidden: {},
-              show: { transition: { staggerChildren: 0.12 } },
-            }}
-          >
-            <motion.p
-              className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600"
-              variants={{
-                hidden: { opacity: 0, x: -60 },
-                show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
-              }}
-            >
-              Built with
-            </motion.p>
-
-            <motion.div
-              className="flex items-center gap-3"
-              variants={{
-                hidden: { opacity: 0, x: -60 },
-                show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
-              }}
-            >
-              <div className="h-px w-8 bg-zinc-700 md:w-16" />
-              <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-              <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-                4 sensors
-              </span>
-              <span className="text-sm text-zinc-500">
-                HR, SpO₂, temperature, respiratory
-              </span>
-            </motion.div>
-
-            <motion.div
-              className="flex items-center gap-3"
-              variants={{
-                hidden: { opacity: 0, x: -60 },
-                show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
-              }}
-            >
-              <div className="h-px w-8 bg-zinc-700 md:w-16" />
-              <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-              <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-                45 grams
-              </span>
-              <span className="text-sm text-zinc-500">
-                lightweight enough to wear all night
-              </span>
-            </motion.div>
-
-            <motion.div
-              className="flex items-center gap-3"
-              variants={{
-                hidden: { opacity: 0, x: -60 },
-                show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
-              }}
-            >
-              <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
-              <div
-                className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]"
-                style={{ boxShadow: "0 0 6px rgba(0,212,170,0.5)" }}
-              />
-              <span
-                className="font-display text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
-                style={{ textShadow: "0 0 12px rgba(0,212,170,0.2)" }}
-              >
-                100x cheaper
-              </span>
-              <span className="text-sm text-[#00D4AA]/50">
-                than traditional ICU monitoring
-              </span>
-            </motion.div>
-          </motion.div>
+          {/* ── Device specs — scroll-triggered stagger ── */}
+          <SpecsSection progress={scrollYProgress} />
 
           {/* CTA */}
           <motion.div
