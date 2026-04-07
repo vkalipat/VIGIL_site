@@ -133,7 +133,7 @@ export default function Hero() {
         className="absolute inset-0 z-20 flex items-start justify-center pt-[20vh] pointer-events-none"
       >
         <span
-          className="text-[18vw] sm:text-[15vw] font-extrabold tracking-tight leading-none"
+          className="font-display text-[18vw] sm:text-[15vw] font-extrabold tracking-tight leading-none"
           style={{
             background: "linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.5) 100%)",
             WebkitBackgroundClip: "text",

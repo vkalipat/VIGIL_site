@@ -7,7 +7,7 @@
   --color-surface: #111118;
   --color-teal: #00D4AA;
   --font-sans: var(--font-body);
-  --font-heading: var(--font-heading);
+  --font-display: var(--font-heading);
   --animate-meteor-effect: meteor-effect 5s linear infinite;
 }
 

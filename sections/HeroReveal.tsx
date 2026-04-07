@@ -175,7 +175,7 @@ function ScrollFlipComparison({
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="relative"
             >
-              <p className="text-6xl font-bold tracking-tight text-zinc-400 md:text-[9rem] md:leading-none">
+              <p className="font-display text-6xl font-bold tracking-tight text-zinc-400 md:text-[9rem] md:leading-none">
                 4–8 hours
               </p>
               <BeamWipe progress={wipeProgress} />
@@ -190,7 +190,7 @@ function ScrollFlipComparison({
               className="relative"
             >
               <p
-                className="text-6xl font-bold tracking-tight text-[#00D4AA] md:text-[9rem] md:leading-none"
+                className="font-display text-6xl font-bold tracking-tight text-[#00D4AA] md:text-[9rem] md:leading-none"
                 style={{
                   textShadow:
                     "0 0 30px rgba(0,212,170,0.4), 0 0 60px rgba(0,212,170,0.15), 0 0 120px rgba(0,212,170,0.05)",
@@ -223,7 +223,7 @@ function ScrollFlipComparison({
             transition={{ duration: 0.3 }}
             className="mt-5"
           >
-            <p className="text-xl font-bold uppercase tracking-[0.15em] text-zinc-500 md:text-3xl">
+            <p className="font-display text-xl font-bold uppercase tracking-[0.15em] text-zinc-500 md:text-3xl">
               With General Wards
             </p>
             <p className="mt-2 text-sm text-zinc-600 md:text-base">
@@ -240,7 +240,7 @@ function ScrollFlipComparison({
             className="mt-5"
           >
             <p
-              className="text-xl font-bold uppercase tracking-[0.15em] text-[#00D4AA] md:text-3xl"
+              className="font-display text-xl font-bold uppercase tracking-[0.15em] text-[#00D4AA] md:text-3xl"
               style={{
                 textShadow: "0 0 20px rgba(0,212,170,0.25)",
               }}
@@ -287,7 +287,7 @@ export default function HeroReveal() {
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-                <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+                <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   4 sensors
                 </span>
                 <span className="text-sm text-zinc-500">
@@ -300,7 +300,7 @@ export default function HeroReveal() {
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-                <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+                <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   45 grams
                 </span>
                 <span className="text-sm text-zinc-500">
@@ -317,7 +317,7 @@ export default function HeroReveal() {
                   style={{ boxShadow: "0 0 6px rgba(0,212,170,0.5)" }}
                 />
                 <span
-                  className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
+                  className="font-display text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
                   style={{ textShadow: "0 0 12px rgba(0,212,170,0.2)" }}
                 >
                   100x cheaper

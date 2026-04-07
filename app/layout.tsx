@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Outfit } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -9,7 +9,13 @@ import ScrollToTop from "@/components/ScrollToTop";
 import ShaderBackground from "@/components/ShaderBackground";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const outfit = Outfit({
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
@@ -69,7 +75,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} antialiased`}>
+    <html lang="en" className={`${bricolage.variable} ${outfit.variable} antialiased`}>
       <head>
         <script
           type="application/ld+json"
