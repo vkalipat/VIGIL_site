@@ -12,34 +12,6 @@ import {
 import MagneticButton from "@/components/MagneticButton";
 import { HoverGlowButton } from "@/components/ui/hover-glow-button";
 
-const TAGLINE = "Continuous ICU-grade monitoring at ultra-low cost.".split(" ");
-
-/* ── Word-reveal ──────────────────────────────────────────────── */
-function RevealWord({
-  children,
-  progress,
-  range,
-  className = "text-[#FAFAFA]",
-}: {
-  children: string;
-  progress: MotionValue<number>;
-  range: [number, number];
-  className?: string;
-}) {
-  const opacity = useTransform(progress, range, [0.1, 1]);
-  return (
-    <span className="relative mx-[0.12em] inline-block">
-      <span className="opacity-[0.1]">{children}</span>
-      <motion.span
-        style={{ opacity }}
-        className={`absolute left-0 top-0 ${className}`}
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
-}
-
 /* ── Slide from left ──────────────────────────────────────────── */
 function SlideFromLeft({
   children,
@@ -64,12 +36,12 @@ function ScrollFlipComparison({
   const [showVigil, setShowVigil] = useState(false);
 
   /* strikethrough line animates before the flip */
-  const strikeScaleX = useTransform(progress, [0.40, 0.45], [0, 1]);
-  const compOpacity = useTransform(progress, [0.33, 0.38], [0, 1]);
-  const compY = useTransform(progress, [0.33, 0.38], [40, 0]);
+  const strikeScaleX = useTransform(progress, [0.28, 0.34], [0, 1]);
+  const compOpacity = useTransform(progress, [0.15, 0.22], [0, 1]);
+  const compY = useTransform(progress, [0.15, 0.22], [40, 0]);
 
   useMotionValueEvent(progress, "change", (v) => {
-    setShowVigil(v > 0.47);
+    setShowVigil(v > 0.36);
   });
 
   return (
@@ -166,46 +138,25 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const ctaOpacity = useTransform(scrollYProgress, [0.62, 0.70], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.62, 0.70], [20, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.52, 0.60], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.52, 0.60], [20, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
         <div className="relative mx-auto w-full max-w-6xl px-6 py-20 md:py-24">
-          {/* Tagline word reveal */}
-          <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-center text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[5.5rem]">
-            {TAGLINE.map((word, i) => {
-              const start = 0.15 + (i / TAGLINE.length) * 0.15;
-              return (
-                <RevealWord
-                  key={i}
-                  progress={scrollYProgress}
-                  range={[start, start + 0.04]}
-                  className={
-                    word === "monitoring"
-                      ? "text-[#00D4AA]"
-                      : "text-[#FAFAFA]"
-                  }
-                >
-                  {word}
-                </RevealWord>
-              );
-            })}
-          </h2>
-
           {/* ── Scroll-driven flip ── */}
           <ScrollFlipComparison progress={scrollYProgress} />
 
           {/* ── Device specs — slide from left ── */}
           <div className="mt-16 space-y-5">
-            <SlideFromLeft progress={scrollYProgress} range={[0.50, 0.56]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.39, 0.45]}>
               <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
                 Built with
               </p>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.51, 0.57]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.40, 0.46]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
@@ -217,7 +168,7 @@ export default function HeroReveal() {
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.53, 0.59]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.42, 0.48]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
@@ -229,7 +180,7 @@ export default function HeroReveal() {
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.55, 0.61]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.44, 0.50]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl">
