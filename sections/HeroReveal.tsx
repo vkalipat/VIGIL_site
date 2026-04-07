@@ -77,36 +77,58 @@ function SlideFromLeft({
   return <motion.div style={{ x, opacity }}>{children}</motion.div>;
 }
 
-/* ── Beam wipe effect ─────────────────────────────────────────── */
+/* ── Enhanced beam wipe ───────────────────────────────────────── */
 function BeamWipe({ progress }: { progress: MotionValue<number> }) {
-  /* beam position: sweeps left → right */
-  const beamLeft = useTransform(progress, [0, 1], ["-8%", "108%"]);
-  /* dim overlay grows behind the beam */
+  const beamLeft = useTransform(progress, [0, 1], ["-10%", "110%"]);
   const dimWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
-  /* thin strikethrough line follows the beam */
   const lineWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
   const opacity = useTransform(progress, [0, 0.05], [0, 1]);
+  /* text fades as the wipe progresses */
+  const textDim = useTransform(progress, [0.2, 0.9], [1, 0.25]);
 
   return (
     <motion.div style={{ opacity }} className="pointer-events-none">
-      {/* Glowing beam */}
+      {/* Outer glow halo */}
       <motion.div
         style={{ left: beamLeft }}
-        className="absolute top-0 bottom-0 z-10 w-12 -translate-x-1/2 md:w-20"
+        className="absolute top-[-20%] bottom-[-20%] z-10 w-24 -translate-x-1/2 md:w-40"
       >
-        <div className="h-full w-full bg-gradient-to-r from-transparent via-[#00D4AA]/40 to-transparent blur-md" />
+        <div className="h-full w-full rounded-full bg-[#00D4AA]/10 blur-2xl" />
       </motion.div>
 
-      {/* Dim overlay behind the beam */}
+      {/* Core beam */}
       <motion.div
-        style={{ width: dimWidth }}
-        className="absolute inset-y-0 left-0 z-[5] bg-[#0A0A0F]/75"
+        style={{ left: beamLeft }}
+        className="absolute top-[-10%] bottom-[-10%] z-10 w-10 -translate-x-1/2 md:w-16"
+      >
+        <div className="h-full w-full bg-gradient-to-r from-transparent via-[#00D4AA]/50 to-transparent blur-md" />
+      </motion.div>
+
+      {/* Sharp beam center line */}
+      <motion.div
+        style={{ left: beamLeft }}
+        className="absolute top-0 bottom-0 z-10 w-[2px] -translate-x-1/2 bg-[#00D4AA]/80 md:w-[3px]"
       />
 
-      {/* Clean strikethrough line */}
+      {/* Dim overlay */}
+      <motion.div
+        style={{ width: dimWidth }}
+        className="absolute inset-y-0 left-0 z-[5] bg-[#0A0A0F]/70 backdrop-blur-[1px]"
+      />
+
+      {/* Strikethrough line */}
       <motion.div
         style={{ width: lineWidth }}
-        className="absolute left-0 top-[52%] z-10 h-[2px] bg-gradient-to-r from-[#00D4AA]/60 via-[#00D4AA]/40 to-[#00D4AA]/60 md:h-[3px]"
+        className="absolute left-0 top-[52%] z-10 h-[2px] md:h-[3px]"
+      >
+        <div className="h-full w-full bg-gradient-to-r from-[#00D4AA]/50 via-[#00D4AA]/30 to-[#00D4AA]/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00D4AA]/30 via-[#00D4AA]/15 to-[#00D4AA]/30 blur-sm" />
+      </motion.div>
+
+      {/* Text dimming layer */}
+      <motion.div
+        style={{ opacity: useTransform(progress, [0, 0.3, 1], [0, 0, 0.5]) }}
+        className="absolute inset-0 z-[4] bg-[#0A0A0F]/40"
       />
     </motion.div>
   );
@@ -149,7 +171,7 @@ function ScrollFlipComparison({
               key="ward"
               initial={{ opacity: 0, filter: "blur(10px)" }}
               animate={{ opacity: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 1.04, filter: "blur(14px)" }}
+              exit={{ opacity: 0, scale: 1.06, filter: "blur(16px)" }}
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="relative"
             >
@@ -161,14 +183,30 @@ function ScrollFlipComparison({
           ) : (
             <motion.div
               key="vigil"
-              initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+              initial={{ opacity: 0, scale: 0.88, filter: "blur(12px)" }}
               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="relative"
             >
-              <p className="text-6xl font-bold tracking-tight text-[#00D4AA] md:text-[9rem] md:leading-none">
+              <p
+                className="text-6xl font-bold tracking-tight text-[#00D4AA] md:text-[9rem] md:leading-none"
+                style={{
+                  textShadow:
+                    "0 0 30px rgba(0,212,170,0.4), 0 0 60px rgba(0,212,170,0.15), 0 0 120px rgba(0,212,170,0.05)",
+                }}
+              >
                 5 seconds
               </p>
+              {/* Radial glow burst behind the text on entry */}
+              <motion.div
+                initial={{ opacity: 0.6, scale: 0.5 }}
+                animate={{ opacity: 0, scale: 2.5 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                className="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none"
+              >
+                <div className="h-32 w-64 rounded-full bg-[#00D4AA]/15 blur-3xl md:h-48 md:w-96" />
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -181,7 +219,7 @@ function ScrollFlipComparison({
             key="ward-info"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -10 }}
+            exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
             className="mt-5"
           >
@@ -195,13 +233,18 @@ function ScrollFlipComparison({
         ) : (
           <motion.div
             key="vigil-info"
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="mt-5"
           >
-            <p className="text-xl font-bold uppercase tracking-[0.15em] text-[#00D4AA] md:text-3xl">
+            <p
+              className="text-xl font-bold uppercase tracking-[0.15em] text-[#00D4AA] md:text-3xl"
+              style={{
+                textShadow: "0 0 20px rgba(0,212,170,0.25)",
+              }}
+            >
               With VIGIL
             </p>
             <p className="mt-2 text-sm text-[#00D4AA]/50 md:text-base">
@@ -243,6 +286,7 @@ export default function HeroReveal() {
             <SlideFromLeft progress={scrollYProgress} range={[0.58, 0.66]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
+                <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   4 sensors
                 </span>
@@ -255,6 +299,7 @@ export default function HeroReveal() {
             <SlideFromLeft progress={scrollYProgress} range={[0.62, 0.70]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
+                <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   45 grams
                 </span>
@@ -267,7 +312,14 @@ export default function HeroReveal() {
             <SlideFromLeft progress={scrollYProgress} range={[0.66, 0.74]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
-                <span className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl">
+                <div
+                  className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]"
+                  style={{ boxShadow: "0 0 6px rgba(0,212,170,0.5)" }}
+                />
+                <span
+                  className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
+                  style={{ textShadow: "0 0 12px rgba(0,212,170,0.2)" }}
+                >
                   100x cheaper
                 </span>
                 <span className="text-sm text-[#00D4AA]/50">
