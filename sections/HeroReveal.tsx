@@ -70,45 +70,57 @@ function SlideFromLeft({
   return <motion.div style={{ x, opacity }}>{children}</motion.div>;
 }
 
-/* ── SVG scratch-out effect ───────────────────────────────────── */
-function ScratchOut({ progress }: { progress: MotionValue<number> }) {
-  const pathLength1 = useTransform(progress, [0, 0.6], [0, 1]);
-  const pathLength2 = useTransform(progress, [0.15, 0.75], [0, 1]);
-  const pathLength3 = useTransform(progress, [0.3, 0.9], [0, 1]);
-  const opacity = useTransform(progress, [0, 0.1], [0, 1]);
+/* ── SVG aggressive scribble-out effect ────────────────────────── */
+
+/* Build a tight zigzag path across the viewBox */
+function zigzag(y: number, amplitude: number, steps: number, jitter: number): string {
+  const pts: string[] = [`M -10 ${y}`];
+  const stepW = 420 / steps;
+  for (let i = 1; i <= steps; i++) {
+    const px = -10 + i * stepW;
+    const dir = i % 2 === 0 ? -1 : 1;
+    const j = ((i * 7 + y) % 11 - 5) * jitter; // deterministic jitter
+    pts.push(`L ${px + j} ${y + dir * amplitude + j * 0.5}`);
+  }
+  return pts.join(" ");
+}
+
+const SCRIBBLE_PATHS = [
+  zigzag(38, 28, 32, 1.2),
+  zigzag(45, 30, 28, 1.5),
+  zigzag(52, 26, 35, 0.8),
+  zigzag(42, 32, 24, 1.8),
+  zigzag(48, 24, 30, 1.0),
+];
+
+function ScribbleOut({ progress }: { progress: MotionValue<number> }) {
+  const p1 = useTransform(progress, [0, 0.35], [0, 1]);
+  const p2 = useTransform(progress, [0.08, 0.45], [0, 1]);
+  const p3 = useTransform(progress, [0.18, 0.55], [0, 1]);
+  const p4 = useTransform(progress, [0.35, 0.70], [0, 1]);
+  const p5 = useTransform(progress, [0.50, 0.85], [0, 1]);
+  const opacity = useTransform(progress, [0, 0.08], [0, 1]);
+  const lengths = [p1, p2, p3, p4, p5];
 
   return (
     <motion.svg
       style={{ opacity }}
       className="absolute inset-0 h-full w-full"
-      viewBox="0 0 400 100"
+      viewBox="0 0 400 90"
       preserveAspectRatio="none"
       fill="none"
     >
-      {/* Main scratch — jagged line */}
-      <motion.path
-        d="M -10 48 Q 30 25, 70 52 Q 110 75, 150 45 Q 190 20, 230 55 Q 270 78, 310 42 Q 350 18, 410 50"
-        stroke="rgba(0,212,170,0.6)"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        style={{ pathLength: pathLength1 }}
-      />
-      {/* Second scratch — slightly offset */}
-      <motion.path
-        d="M -10 55 Q 40 30, 90 58 Q 140 80, 190 48 Q 240 22, 290 56 Q 340 76, 410 45"
-        stroke="rgba(0,212,170,0.35)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        style={{ pathLength: pathLength2 }}
-      />
-      {/* Third thin scratch */}
-      <motion.path
-        d="M -10 42 Q 50 62, 100 40 Q 160 22, 220 50 Q 280 72, 340 38 Q 380 25, 410 52"
-        stroke="rgba(0,212,170,0.2)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        style={{ pathLength: pathLength3 }}
-      />
+      {SCRIBBLE_PATHS.map((d, i) => (
+        <motion.path
+          key={i}
+          d={d}
+          stroke={`rgba(0,212,170,${0.55 - i * 0.08})`}
+          strokeWidth={3.5 - i * 0.4}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ pathLength: lengths[i] }}
+        />
+      ))}
     </motion.svg>
   );
 }
@@ -159,7 +171,7 @@ function ScrollFlipComparison({
                 4–8 hours
               </p>
               {/* SVG scratch overlay */}
-              <ScratchOut progress={scratchProgress} />
+              <ScribbleOut progress={scratchProgress} />
             </motion.div>
           ) : (
             <motion.div
@@ -188,10 +200,10 @@ function ScrollFlipComparison({
             transition={{ duration: 0.3 }}
             className="mt-5"
           >
-            <p className="font-mono text-xs uppercase tracking-[0.3em] text-zinc-500 md:text-sm">
-              General Ward Standard
+            <p className="text-xl font-bold uppercase tracking-[0.15em] text-zinc-500 md:text-3xl">
+              General Ward
             </p>
-            <p className="mt-1.5 text-sm text-zinc-600 md:text-base">
+            <p className="mt-2 text-sm text-zinc-600 md:text-base">
               3–6 spot checks per day
             </p>
           </motion.div>
@@ -204,10 +216,10 @@ function ScrollFlipComparison({
             transition={{ duration: 0.4, delay: 0.15 }}
             className="mt-5"
           >
-            <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#7AE7D4] md:text-sm">
+            <p className="text-xl font-bold uppercase tracking-[0.15em] text-[#00D4AA] md:text-3xl">
               With VIGIL
             </p>
-            <p className="mt-1.5 text-sm text-[#00D4AA]/50 md:text-base">
+            <p className="mt-2 text-sm text-[#00D4AA]/50 md:text-base">
               17,280 continuous readings per day
             </p>
           </motion.div>
