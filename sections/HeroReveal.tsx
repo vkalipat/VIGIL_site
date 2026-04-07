@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import MagneticButton from "@/components/MagneticButton";
 import { HoverGlowButton } from "@/components/ui/hover-glow-button";
+import { NeuroNoise } from "@paper-design/shaders-react";
 
 const TAGLINE = "Continuous ICU-grade monitoring at ultra-low cost.".split(" ");
 
@@ -90,7 +91,21 @@ export default function HeroReveal() {
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
-        <div className="mx-auto w-full max-w-7xl px-6 py-20 text-center md:py-24">
+        {/* Animated shader background */}
+        <div className="absolute inset-0 opacity-25">
+          <NeuroNoise
+            colorFront="#00D4AA"
+            colorMid="#003d2e"
+            colorBack="#0A0A0F"
+            brightness={0.06}
+            contrast={0.35}
+            speed={0.2}
+            scale={1.2}
+            style={{ width: "100%", height: "100%" }}
+          />
+        </div>
+
+        <div className="relative mx-auto w-full max-w-7xl px-6 py-20 text-center md:py-24">
           {/* Tagline word reveal */}
           <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[5.5rem]">
             {TAGLINE.map((word, i) => {
