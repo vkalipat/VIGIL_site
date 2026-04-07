@@ -118,11 +118,17 @@ export default function HeroReveal() {
             <div className="mt-16 flex items-center gap-6 md:gap-10">
               <div className="hidden h-px flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-zinc-600 md:block" />
               <div className="shrink-0 text-left md:text-right">
-                <p className="text-5xl font-bold tracking-tight text-zinc-400 md:text-7xl">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
+                  Current Standard
+                </p>
+                <p className="mt-2 text-5xl font-bold tracking-tight text-zinc-400 md:text-7xl">
                   4–8h
                 </p>
-                <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
-                  General Ward · 3–6 spot checks / day
+                <p className="mt-1 text-sm text-zinc-500">
+                  between nurse checks
+                </p>
+                <p className="mt-0.5 font-mono text-xs text-zinc-600">
+                  3–6 spot checks per day
                 </p>
               </div>
             </div>
@@ -131,73 +137,85 @@ export default function HeroReveal() {
           {/* Scan line */}
           <motion.div
             style={{ scaleX: lineScale, opacity: lineOpacity }}
-            className="mx-auto mt-5 h-px max-w-2xl origin-left bg-gradient-to-r from-zinc-600 via-[#00D4AA]/60 to-zinc-600"
+            className="mx-auto mt-6 h-px max-w-2xl origin-left bg-gradient-to-r from-zinc-600 via-[#00D4AA]/60 to-zinc-600"
           />
 
           {/* ── VIGIL — slides from right ── */}
           <SlideFromRight progress={scrollYProgress} range={[0.39, 0.49]}>
-            <div className="mt-5 flex items-center gap-6 md:gap-10">
+            <div className="mt-6 flex items-center gap-6 md:gap-10">
               <div className="shrink-0 text-left">
-                <p className="text-5xl font-bold tracking-tight text-[#00D4AA] md:text-7xl">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#00D4AA]/50">
+                  With VIGIL
+                </p>
+                <p className="mt-2 text-5xl font-bold tracking-tight text-[#00D4AA] md:text-7xl">
                   5s
                 </p>
-                <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.28em] text-[#7AE7D4]">
-                  VIGIL · 17,280 readings / day
+                <p className="mt-1 text-sm text-[#00D4AA]/60">
+                  continuous monitoring
+                </p>
+                <p className="mt-0.5 font-mono text-xs text-[#00D4AA]/30">
+                  17,280 readings per day
                 </p>
               </div>
               <div className="hidden h-px flex-1 bg-gradient-to-r from-[#00D4AA]/40 via-[#00D4AA]/15 to-transparent md:block" />
             </div>
           </SlideFromRight>
 
-          {/* ── Stats — alternating sides ── */}
-          <div className="mt-14 space-y-5">
+          {/* ── Device specs — all from left, staggered ── */}
+          <div className="mt-14 space-y-4">
             <SlideFromLeft progress={scrollYProgress} range={[0.48, 0.54]}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
+                Device Specs
+              </p>
+            </SlideFromLeft>
+
+            <SlideFromLeft progress={scrollYProgress} range={[0.49, 0.55]}>
               <div className="flex items-center gap-3">
-                <div className="h-px w-10 bg-zinc-700 md:w-20" />
+                <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   4
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                  Sensors
+                <span className="text-sm text-zinc-500">
+                  sensors per headband
                 </span>
               </div>
             </SlideFromLeft>
 
-            <SlideFromRight progress={scrollYProgress} range={[0.50, 0.56]}>
-              <div className="flex items-center justify-end gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                  Weight
-                </span>
+            <SlideFromLeft progress={scrollYProgress} range={[0.51, 0.57]}>
+              <div className="flex items-center gap-3">
+                <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   &lt;45g
                 </span>
-                <div className="h-px w-10 bg-zinc-700 md:w-20" />
-              </div>
-            </SlideFromRight>
-
-            <SlideFromLeft progress={scrollYProgress} range={[0.52, 0.58]}>
-              <div className="flex items-center gap-3">
-                <div className="h-px w-10 bg-zinc-700 md:w-20" />
-                <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-                  $46
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                  Per Unit
+                <span className="text-sm text-zinc-500">
+                  total weight
                 </span>
               </div>
             </SlideFromLeft>
 
-            <SlideFromRight progress={scrollYProgress} range={[0.54, 0.60]}>
-              <div className="flex items-center justify-end gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                  Refresh
+            <SlideFromLeft progress={scrollYProgress} range={[0.53, 0.59]}>
+              <div className="flex items-center gap-3">
+                <div className="h-px w-8 bg-zinc-700 md:w-16" />
+                <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+                  $46
                 </span>
+                <span className="text-sm text-zinc-500">
+                  per unit cost
+                </span>
+              </div>
+            </SlideFromLeft>
+
+            <SlideFromLeft progress={scrollYProgress} range={[0.55, 0.61]}>
+              <div className="flex items-center gap-3">
+                <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl">
                   5s
                 </span>
-                <div className="h-px w-10 bg-[#00D4AA]/30 md:w-20" />
+                <span className="text-sm text-[#00D4AA]/50">
+                  refresh rate
+                </span>
               </div>
-            </SlideFromRight>
+            </SlideFromLeft>
           </div>
 
           {/* CTA */}
