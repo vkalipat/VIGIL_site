@@ -31,13 +31,20 @@ function TextReveal({
       {words.map((word, i) => {
         const start = range[0] + (i / words.length) * span;
         const end = start + span / words.length + 0.02;
-        return <RevealWord key={i} word={word} progress={progress} range={[start, end]} />;
+        return (
+          <WordReveal
+            key={i}
+            word={word}
+            progress={progress}
+            range={[start, end]}
+          />
+        );
       })}
     </p>
   );
 }
 
-function RevealWord({
+function WordReveal({
   word,
   progress,
   range,
@@ -70,58 +77,38 @@ function SlideFromLeft({
   return <motion.div style={{ x, opacity }}>{children}</motion.div>;
 }
 
-/* ── SVG aggressive scribble-out effect ────────────────────────── */
-
-/* Build a tight zigzag path across the viewBox */
-function zigzag(y: number, amplitude: number, steps: number, jitter: number): string {
-  const pts: string[] = [`M -10 ${y}`];
-  const stepW = 420 / steps;
-  for (let i = 1; i <= steps; i++) {
-    const px = -10 + i * stepW;
-    const dir = i % 2 === 0 ? -1 : 1;
-    const j = ((i * 7 + y) % 11 - 5) * jitter; // deterministic jitter
-    pts.push(`L ${px + j} ${y + dir * amplitude + j * 0.5}`);
-  }
-  return pts.join(" ");
-}
-
-const SCRIBBLE_PATHS = [
-  zigzag(38, 28, 32, 1.2),
-  zigzag(45, 30, 28, 1.5),
-  zigzag(52, 26, 35, 0.8),
-  zigzag(42, 32, 24, 1.8),
-  zigzag(48, 24, 30, 1.0),
-];
-
-function ScribbleOut({ progress }: { progress: MotionValue<number> }) {
-  const p1 = useTransform(progress, [0, 0.35], [0, 1]);
-  const p2 = useTransform(progress, [0.08, 0.45], [0, 1]);
-  const p3 = useTransform(progress, [0.18, 0.55], [0, 1]);
-  const p4 = useTransform(progress, [0.35, 0.70], [0, 1]);
-  const p5 = useTransform(progress, [0.50, 0.85], [0, 1]);
-  const opacity = useTransform(progress, [0, 0.08], [0, 1]);
-  const lengths = [p1, p2, p3, p4, p5];
+/* ── Beam wipe effect ─────────────────────────────────────────── */
+function BeamWipe({ progress }: { progress: MotionValue<number> }) {
+  /* beam position: sweeps left → right */
+  const beamLeft = useTransform(progress, [0, 1], ["-8%", "108%"]);
+  /* dim overlay grows behind the beam */
+  const dimWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
+  /* thin strikethrough line follows the beam */
+  const lineWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
+  const opacity = useTransform(progress, [0, 0.05], [0, 1]);
 
   return (
-    <motion.svg
-      style={{ opacity }}
-      className="absolute inset-0 h-full w-full"
-      viewBox="0 0 400 90"
-      preserveAspectRatio="none"
-      fill="none"
-    >
-      {SCRIBBLE_PATHS.map((d, i) => (
-        <motion.path
-          key={i}
-          d={d}
-          stroke={`rgba(0,212,170,${0.55 - i * 0.08})`}
-          strokeWidth={3.5 - i * 0.4}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ pathLength: lengths[i] }}
-        />
-      ))}
-    </motion.svg>
+    <motion.div style={{ opacity }} className="pointer-events-none">
+      {/* Glowing beam */}
+      <motion.div
+        style={{ left: beamLeft }}
+        className="absolute top-0 bottom-0 z-10 w-12 -translate-x-1/2 md:w-20"
+      >
+        <div className="h-full w-full bg-gradient-to-r from-transparent via-[#00D4AA]/40 to-transparent blur-md" />
+      </motion.div>
+
+      {/* Dim overlay behind the beam */}
+      <motion.div
+        style={{ width: dimWidth }}
+        className="absolute inset-y-0 left-0 z-[5] bg-[#0A0A0F]/75"
+      />
+
+      {/* Clean strikethrough line */}
+      <motion.div
+        style={{ width: lineWidth }}
+        className="absolute left-0 top-[52%] z-10 h-[2px] bg-gradient-to-r from-[#00D4AA]/60 via-[#00D4AA]/40 to-[#00D4AA]/60 md:h-[3px]"
+      />
+    </motion.div>
   );
 }
 
@@ -133,8 +120,7 @@ function ScrollFlipComparison({
 }) {
   const [showVigil, setShowVigil] = useState(false);
 
-  /* scratch draws across before the flip */
-  const scratchProgress = useTransform(progress, [0.35, 0.48], [0, 1]);
+  const wipeProgress = useTransform(progress, [0.32, 0.47], [0, 1]);
   const compOpacity = useTransform(progress, [0.20, 0.28], [0, 1]);
   const compScale = useTransform(progress, [0.20, 0.28], [0.92, 1]);
 
@@ -152,7 +138,7 @@ function ScrollFlipComparison({
         className="text-lg text-zinc-500 md:text-xl"
       />
 
-      {/* Big number with scratch + flip */}
+      {/* Big number with beam wipe + flip */}
       <motion.div
         style={{ opacity: compOpacity, scale: compScale }}
         className="relative mx-auto mt-6 inline-block"
@@ -170,8 +156,7 @@ function ScrollFlipComparison({
               <p className="text-6xl font-bold tracking-tight text-zinc-400 md:text-[9rem] md:leading-none">
                 4–8 hours
               </p>
-              {/* SVG scratch overlay */}
-              <ScribbleOut progress={scratchProgress} />
+              <BeamWipe progress={wipeProgress} />
             </motion.div>
           ) : (
             <motion.div
@@ -201,7 +186,7 @@ function ScrollFlipComparison({
             className="mt-5"
           >
             <p className="text-xl font-bold uppercase tracking-[0.15em] text-zinc-500 md:text-3xl">
-              General Ward
+              With General Wards
             </p>
             <p className="mt-2 text-sm text-zinc-600 md:text-base">
               3–6 spot checks per day
