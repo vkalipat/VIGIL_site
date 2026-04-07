@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  AnimatePresence,
   motion,
   MotionValue,
   useScroll,
@@ -56,20 +57,97 @@ function SlideFromLeft({
   );
 }
 
-function SlideFromRight({
-  children,
-  progress,
-  range,
-}: {
-  children: React.ReactNode;
-  progress: MotionValue<number>;
-  range: [number, number];
-}) {
-  const x = useTransform(progress, range, [500, 0]);
-  const opacity = useTransform(progress, range, [0, 1]);
-  const rotate = useTransform(progress, range, [1.5, 0]);
+/* ── Flip comparison ──────────────────────────────────────────── */
+const STATES = [
+  {
+    value: "4–8h",
+    label: "General Ward",
+    detail: "3–6 spot checks per day",
+    accent: false,
+  },
+  {
+    value: "5s",
+    label: "With VIGIL",
+    detail: "17,280 continuous readings per day",
+    accent: true,
+  },
+];
+
+function FlipComparison() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % 2), 3500);
+    return () => clearInterval(id);
+  }, []);
+
+  const state = STATES[index];
+
   return (
-    <motion.div style={{ x, opacity, rotate }}>{children}</motion.div>
+    <div className="text-left">
+      <p className="text-sm text-zinc-500">Patients are checked every</p>
+
+      {/* Big flipping number */}
+      <div className="relative mt-2 h-[72px] overflow-hidden md:h-[96px]">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={state.value}
+            initial={{ y: 50, opacity: 0, filter: "blur(10px)" }}
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            exit={{ y: -50, opacity: 0, filter: "blur(10px)" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`absolute text-6xl font-bold tracking-tight md:text-8xl ${
+              state.accent ? "text-[#00D4AA]" : "text-zinc-400"
+            }`}
+          >
+            {state.value}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      {/* Flipping labels */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={state.label}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.35 }}
+          className="mt-1"
+        >
+          <p
+            className={`font-mono text-[10px] uppercase tracking-[0.28em] ${
+              state.accent ? "text-[#7AE7D4]" : "text-zinc-500"
+            }`}
+          >
+            {state.label}
+          </p>
+          <p
+            className={`mt-1 text-sm ${
+              state.accent ? "text-[#00D4AA]/50" : "text-zinc-600"
+            }`}
+          >
+            {state.detail}
+          </p>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Active indicator dots */}
+      <div className="mt-4 flex gap-1.5">
+        {STATES.map((_, i) => (
+          <div
+            key={i}
+            className={`h-1 rounded-full transition-all duration-500 ${
+              i === index
+                ? i === 1
+                  ? "w-6 bg-[#00D4AA]"
+                  : "w-6 bg-zinc-400"
+                : "w-1 bg-zinc-700"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -81,12 +159,8 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  /* scan line between comparisons */
-  const lineScale = useTransform(scrollYProgress, [0.38, 0.46], [0, 1]);
-  const lineOpacity = useTransform(scrollYProgress, [0.38, 0.43, 0.54, 0.58], [0, 0.6, 0.6, 0]);
-
-  const ctaOpacity = useTransform(scrollYProgress, [0.62, 0.70], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.62, 0.70], [20, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.58, 0.66], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.58, 0.66], [20, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
@@ -113,106 +187,54 @@ export default function HeroReveal() {
             })}
           </h2>
 
-          {/* ── General Ward — slides from left ── */}
+          {/* ── Flip comparison — slides from left ── */}
           <SlideFromLeft progress={scrollYProgress} range={[0.33, 0.43]}>
-            <div className="mt-16 flex items-center gap-6 md:gap-10">
+            <div className="mt-14 flex items-center gap-8 md:gap-12">
               <div className="hidden h-px flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-zinc-600 md:block" />
-              <div className="shrink-0 text-left md:text-right">
-                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
-                  Current Standard
-                </p>
-                <p className="mt-2 text-5xl font-bold tracking-tight text-zinc-400 md:text-7xl">
-                  4–8h
-                </p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  between nurse checks
-                </p>
-                <p className="mt-0.5 font-mono text-xs text-zinc-600">
-                  3–6 spot checks per day
-                </p>
-              </div>
+              <FlipComparison />
             </div>
           </SlideFromLeft>
 
-          {/* Scan line */}
-          <motion.div
-            style={{ scaleX: lineScale, opacity: lineOpacity }}
-            className="mx-auto mt-6 h-px max-w-2xl origin-left bg-gradient-to-r from-zinc-600 via-[#00D4AA]/60 to-zinc-600"
-          />
-
-          {/* ── VIGIL — slides from right ── */}
-          <SlideFromRight progress={scrollYProgress} range={[0.39, 0.49]}>
-            <div className="mt-6 flex items-center gap-6 md:gap-10">
-              <div className="shrink-0 text-left">
-                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#00D4AA]/50">
-                  With VIGIL
-                </p>
-                <p className="mt-2 text-5xl font-bold tracking-tight text-[#00D4AA] md:text-7xl">
-                  5s
-                </p>
-                <p className="mt-1 text-sm text-[#00D4AA]/60">
-                  continuous monitoring
-                </p>
-                <p className="mt-0.5 font-mono text-xs text-[#00D4AA]/30">
-                  17,280 readings per day
-                </p>
-              </div>
-              <div className="hidden h-px flex-1 bg-gradient-to-r from-[#00D4AA]/40 via-[#00D4AA]/15 to-transparent md:block" />
-            </div>
-          </SlideFromRight>
-
-          {/* ── Device specs — all from left, staggered ── */}
+          {/* ── Device specs — staggered from left ── */}
           <div className="mt-14 space-y-4">
-            <SlideFromLeft progress={scrollYProgress} range={[0.48, 0.54]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.46, 0.52]}>
               <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
-                Device Specs
+                One headband
               </p>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.49, 0.55]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.47, 0.53]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   4
                 </span>
                 <span className="text-sm text-zinc-500">
-                  sensors per headband
+                  sensors — HR, SpO₂, temperature, respiratory
                 </span>
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.51, 0.57]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.49, 0.55]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-zinc-700 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
                   &lt;45g
                 </span>
                 <span className="text-sm text-zinc-500">
-                  total weight
+                  lightweight enough to wear all night
                 </span>
               </div>
             </SlideFromLeft>
 
-            <SlideFromLeft progress={scrollYProgress} range={[0.53, 0.59]}>
-              <div className="flex items-center gap-3">
-                <div className="h-px w-8 bg-zinc-700 md:w-16" />
-                <span className="text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-                  $46
-                </span>
-                <span className="text-sm text-zinc-500">
-                  per unit cost
-                </span>
-              </div>
-            </SlideFromLeft>
-
-            <SlideFromLeft progress={scrollYProgress} range={[0.55, 0.61]}>
+            <SlideFromLeft progress={scrollYProgress} range={[0.51, 0.57]}>
               <div className="flex items-center gap-3">
                 <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
                 <span className="text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl">
-                  5s
+                  $46
                 </span>
                 <span className="text-sm text-[#00D4AA]/50">
-                  refresh rate
+                  per unit — fraction of ICU equipment
                 </span>
               </div>
             </SlideFromLeft>
