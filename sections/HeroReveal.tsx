@@ -9,16 +9,8 @@ import {
 } from "framer-motion";
 import MagneticButton from "@/components/MagneticButton";
 import { HoverGlowButton } from "@/components/ui/hover-glow-button";
-import { NeuroNoise } from "@paper-design/shaders-react";
 
 const TAGLINE = "Continuous ICU-grade monitoring at ultra-low cost.".split(" ");
-
-const STATS = [
-  { value: "4", label: "Sensors", range: [0.52, 0.58] as [number, number] },
-  { value: "<45g", label: "Weight", range: [0.54, 0.60] as [number, number] },
-  { value: "$46", label: "Per unit", range: [0.56, 0.62] as [number, number] },
-  { value: "5s", label: "Refresh", range: [0.58, 0.64] as [number, number] },
-];
 
 /* ── Word-reveal ──────────────────────────────────────────────── */
 function RevealWord({
@@ -46,35 +38,6 @@ function RevealWord({
   );
 }
 
-/* ── Inline stat ──────────────────────────────────────────────── */
-function StatItem({
-  value,
-  label,
-  progress,
-  range,
-}: {
-  value: string;
-  label: string;
-  progress: MotionValue<number>;
-  range: [number, number];
-}) {
-  const opacity = useTransform(progress, range, [0, 1]);
-  const y = useTransform(progress, range, [10, 0]);
-  return (
-    <motion.div
-      style={{ opacity, y }}
-      className="flex items-baseline gap-1.5"
-    >
-      <span className="text-lg font-semibold tracking-tight text-[#FAFAFA] md:text-xl">
-        {value}
-      </span>
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-        {label}
-      </span>
-    </motion.div>
-  );
-}
-
 /* ── Main component ───────────────────────────────────────────── */
 export default function HeroReveal() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -83,29 +46,15 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const cardOpacity = useTransform(scrollYProgress, [0.34, 0.42], [0, 1]);
-  const cardY = useTransform(scrollYProgress, [0.34, 0.42], [24, 0]);
-  const ctaOpacity = useTransform(scrollYProgress, [0.62, 0.70], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.62, 0.70], [12, 0]);
+  const gridOpacity = useTransform(scrollYProgress, [0.32, 0.40], [0, 1]);
+  const gridY = useTransform(scrollYProgress, [0.32, 0.40], [30, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.58, 0.66], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.58, 0.66], [12, 0]);
 
   return (
     <div ref={sectionRef} className="relative bg-[#0A0A0F]">
       <div className="sticky top-0 relative flex min-h-screen items-center justify-center overflow-hidden">
-        {/* Animated shader background */}
-        <div className="absolute inset-0 opacity-25">
-          <NeuroNoise
-            colorFront="#00D4AA"
-            colorMid="#003d2e"
-            colorBack="#0A0A0F"
-            brightness={0.06}
-            contrast={0.35}
-            speed={0.2}
-            scale={1.2}
-            style={{ width: "100%", height: "100%" }}
-          />
-        </div>
-
-        <div className="relative mx-auto w-full max-w-7xl px-6 py-20 text-center md:py-24">
+        <div className="relative mx-auto w-full max-w-6xl px-6 py-20 text-center md:py-24">
           {/* Tagline word reveal */}
           <h2 className="mx-auto flex max-w-5xl flex-wrap justify-center text-3xl font-bold leading-[1.05] tracking-tight md:text-5xl lg:text-[5.5rem]">
             {TAGLINE.map((word, i) => {
@@ -127,13 +76,31 @@ export default function HeroReveal() {
             })}
           </h2>
 
-          {/* ── Comparison card with border beam ── */}
+          {/* ── Bento grid ── */}
           <motion.div
-            style={{ opacity: cardOpacity, y: cardY }}
-            className="mx-auto mt-10 max-w-3xl"
+            style={{ opacity: gridOpacity, y: gridY }}
+            className="mx-auto mt-10 grid max-w-5xl gap-2.5 md:grid-cols-6 md:grid-rows-2"
           >
-            <div className="relative overflow-hidden rounded-2xl p-px">
-              {/* Spinning conic gradient = border beam */}
+            {/* General Ward — spans 2 cols */}
+            <div className="flex flex-col justify-between rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 md:col-span-2 md:row-span-2">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
+                  General Ward
+                </p>
+                <p className="mt-3 text-5xl font-bold tracking-tight text-zinc-400 md:text-6xl">
+                  4–8h
+                </p>
+              </div>
+              <div className="mt-6">
+                <p className="text-sm text-zinc-500">Intermittent spot checks</p>
+                <p className="mt-1 font-mono text-xs text-zinc-600">
+                  3–6 readings / day
+                </p>
+              </div>
+            </div>
+
+            {/* VIGIL — spans 2 cols, border beam */}
+            <div className="relative overflow-hidden rounded-2xl p-px md:col-span-2 md:row-span-2">
               <div
                 className="absolute -inset-[200px] animate-[spin_8s_linear_infinite]"
                 style={{
@@ -141,57 +108,60 @@ export default function HeroReveal() {
                     "conic-gradient(from 0deg, transparent 0%, transparent 78%, rgba(0,212,170,0.25) 88%, rgba(0,212,170,0.5) 94%, transparent 100%)",
                 }}
               />
-
-              {/* Card body */}
-              <div className="relative rounded-2xl bg-[#0e0e14] px-8 py-8 md:px-12 md:py-10">
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-10">
-                  {/* General Ward */}
-                  <div className="text-center md:text-right">
-                    <p className="text-4xl font-bold tracking-tight text-zinc-400 md:text-5xl">
-                      4–8h
-                    </p>
-                    <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
-                      General Ward
-                    </p>
-                    <p className="mt-1 text-xs text-zinc-600">
-                      3–6 spot checks / day
-                    </p>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="h-12 w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent md:h-16" />
-                  </div>
-
-                  {/* VIGIL */}
-                  <div className="text-center md:text-left">
-                    <p className="text-4xl font-bold tracking-tight text-[#00D4AA] md:text-5xl">
-                      5s
-                    </p>
-                    <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.28em] text-[#7AE7D4]">
-                      VIGIL
-                    </p>
-                    <p className="mt-1 text-xs text-[#00D4AA]/40">
-                      17,280 readings / day
-                    </p>
-                  </div>
+              <div className="relative flex h-full flex-col justify-between rounded-2xl bg-[#0c0c12] p-6">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#7AE7D4]">
+                    VIGIL
+                  </p>
+                  <p className="mt-3 text-5xl font-bold tracking-tight text-[#00D4AA] md:text-6xl">
+                    5s
+                  </p>
+                </div>
+                <div className="mt-6">
+                  <p className="text-sm text-[#00D4AA]/60">
+                    Continuous monitoring
+                  </p>
+                  <p className="mt-1 font-mono text-xs text-[#00D4AA]/30">
+                    17,280 readings / day
+                  </p>
                 </div>
               </div>
             </div>
-          </motion.div>
 
-          {/* Stats */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {STATS.map((s) => (
-              <StatItem
-                key={s.label}
-                value={s.value}
-                label={s.label}
-                progress={scrollYProgress}
-                range={s.range}
-              />
-            ))}
-          </div>
+            {/* Stats — 2 cols, 2 rows of 2 */}
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-center">
+              <p className="text-2xl font-bold tracking-tight text-[#FAFAFA] md:text-3xl">
+                4
+              </p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                Sensors
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-center">
+              <p className="text-2xl font-bold tracking-tight text-[#FAFAFA] md:text-3xl">
+                &lt;45g
+              </p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                Weight
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-center">
+              <p className="text-2xl font-bold tracking-tight text-[#FAFAFA] md:text-3xl">
+                $46
+              </p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                Per Unit
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-center">
+              <p className="text-2xl font-bold tracking-tight text-[#FAFAFA] md:text-3xl">
+                5s
+              </p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+                Refresh
+              </p>
+            </div>
+          </motion.div>
 
           {/* CTA */}
           <motion.div
