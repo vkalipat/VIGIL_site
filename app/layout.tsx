@@ -6,7 +6,6 @@ import SmoothScroll from "@/components/SmoothScroll";
 import CursorGlow from "@/components/CursorGlow";
 import ScrollProgress from "@/components/ScrollProgress";
 import ScrollToTop from "@/components/ScrollToTop";
-import ShaderBackground from "@/components/ShaderBackground";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -107,7 +106,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#0A0A0F] text-[#FAFAFA] font-sans">
-        <ShaderBackground />
         <CursorGlow />
         <ScrollProgress />
         <SmoothScroll>

@@ -21,7 +21,7 @@ const team: TeamMember[] = [
   {
     name: "Vishwa Rajan",
     role: "Hardware Design",
-    bio: "Led physical design and prototyping, prioritizing comfort and wearability. Made the device unobtrusive yet suitable for continuous monitoring.",
+    bio: "Led market research and competitive analysis to position VIGIL within hospital systems. Built the path from prototype to adoption.",
     photo: "/images/canva/team-vishwa.png",
   },
   {
@@ -33,7 +33,7 @@ const team: TeamMember[] = [
   {
     name: "Vedant Mehta",
     role: "Business Development",
-    bio: "Led market research and competitive analysis to position VIGIL within hospital systems. Built the path from prototype to adoption.",
+    bio: "Led physical design and prototyping, prioritizing comfort and wearability. Made the device unobtrusive yet suitable for continuous monitoring.",
     photo: "/images/canva/team-vedant-m.png",
   },
 ];

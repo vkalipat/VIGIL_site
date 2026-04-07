@@ -74,7 +74,14 @@ function SlideFromLeft({
 }) {
   const x = useTransform(progress, range, [-400, 0]);
   const opacity = useTransform(progress, range, [0, 1]);
-  return <motion.div style={{ x, opacity }}>{children}</motion.div>;
+  return (
+    <motion.div
+      style={{ x, opacity, willChange: "transform, opacity" }}
+      className="transform-gpu"
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 /* ── Enhanced beam wipe ───────────────────────────────────────── */
