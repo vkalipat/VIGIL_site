@@ -82,10 +82,8 @@ export default function HeroReveal() {
     offset: ["start end", "end start"],
   });
 
-  const descOpacity = useTransform(scrollYProgress, [0.30, 0.38], [0, 1]);
-  const descY = useTransform(scrollYProgress, [0.30, 0.38], [20, 0]);
-  const cardOpacity = useTransform(scrollYProgress, [0.38, 0.46], [0, 1]);
-  const cardY = useTransform(scrollYProgress, [0.38, 0.46], [24, 0]);
+  const cardOpacity = useTransform(scrollYProgress, [0.34, 0.42], [0, 1]);
+  const cardY = useTransform(scrollYProgress, [0.34, 0.42], [24, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0.62, 0.70], [0, 1]);
   const ctaY = useTransform(scrollYProgress, [0.62, 0.70], [12, 0]);
 
@@ -113,15 +111,6 @@ export default function HeroReveal() {
               );
             })}
           </h2>
-
-          {/* Description */}
-          <motion.p
-            style={{ opacity: descOpacity, y: descY }}
-            className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-zinc-400 md:text-base"
-          >
-            General ward patients are monitored every 4–8 hours. VIGIL
-            monitors every 5 seconds. Four sensors. One headband. Under $50.
-          </motion.p>
 
           {/* ── Comparison card with border beam ── */}
           <motion.div
