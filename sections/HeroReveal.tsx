@@ -386,7 +386,7 @@ export default function HeroReveal() {
         </div>
       </div>
 
-      <div className="h-[250vh]" aria-hidden="true" />
+      <div className="h-[180vh]" aria-hidden="true" />
     </div>
   );
 }
