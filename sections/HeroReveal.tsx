@@ -62,80 +62,79 @@ function WordReveal({
   );
 }
 
-/* ── Specs section — triggers stagger at scroll threshold ─────── */
-const specItem = {
-  hidden: { opacity: 0, x: -60, visibility: "hidden" as const },
-  show: {
-    opacity: 1,
-    x: 0,
-    visibility: "visible" as const,
-    transition: { duration: 0.5, ease: "easeOut" as const },
-  },
-};
+/* ── Scroll-driven spec item ───────────────────────────────────── */
+function SpecItem({
+  children,
+  progress,
+  range,
+}: {
+  children: React.ReactNode;
+  progress: MotionValue<number>;
+  range: [number, number];
+}) {
+  const opacity = useTransform(progress, range, [0, 1]);
+  const x = useTransform(progress, range, [-40, 0]);
+  return (
+    <motion.div style={{ opacity, x }} className="transform-gpu">
+      {children}
+    </motion.div>
+  );
+}
 
 function SpecsSection({ progress }: { progress: MotionValue<number> }) {
-  const [show, setShow] = useState(false);
-
-  useMotionValueEvent(progress, "change", (v) => {
-    if (v > 0.58 && !show) setShow(true);
-  });
-
   return (
-    <motion.div
-      className="mt-16 space-y-5 transform-gpu"
-      initial="hidden"
-      animate={show ? "show" : "hidden"}
-      variants={{
-        hidden: {},
-        show: { transition: { staggerChildren: 0.15 } },
-      }}
-    >
-      <motion.p
-        className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600"
-        variants={specItem}
-      >
-        Built with
-      </motion.p>
+    <div className="mt-16 space-y-5">
+      <SpecItem progress={progress} range={[0.55, 0.60]}>
+        <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-600">
+          Built with
+        </p>
+      </SpecItem>
 
-      <motion.div className="flex items-center gap-3" variants={specItem}>
-        <div className="h-px w-8 bg-zinc-700 md:w-16" />
-        <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-        <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-          4 sensors
-        </span>
-        <span className="text-sm text-zinc-500">
-          HR, SpO₂, temperature, respiratory
-        </span>
-      </motion.div>
+      <SpecItem progress={progress} range={[0.58, 0.63]}>
+        <div className="flex items-center gap-3">
+          <div className="h-px w-8 bg-zinc-700 md:w-16" />
+          <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
+          <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+            4 sensors
+          </span>
+          <span className="text-sm text-zinc-500">
+            HR, SpO₂, temperature, respiratory
+          </span>
+        </div>
+      </SpecItem>
 
-      <motion.div className="flex items-center gap-3" variants={specItem}>
-        <div className="h-px w-8 bg-zinc-700 md:w-16" />
-        <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-        <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
-          45 grams
-        </span>
-        <span className="text-sm text-zinc-500">
-          lightweight enough to wear all night
-        </span>
-      </motion.div>
+      <SpecItem progress={progress} range={[0.61, 0.66]}>
+        <div className="flex items-center gap-3">
+          <div className="h-px w-8 bg-zinc-700 md:w-16" />
+          <div className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
+          <span className="font-display text-xl font-semibold tracking-tight text-[#FAFAFA] md:text-2xl">
+            45 grams
+          </span>
+          <span className="text-sm text-zinc-500">
+            lightweight enough to wear all night
+          </span>
+        </div>
+      </SpecItem>
 
-      <motion.div className="flex items-center gap-3" variants={specItem}>
-        <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
-        <div
-          className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]"
-          style={{ boxShadow: "0 0 6px rgba(0,212,170,0.5)" }}
-        />
-        <span
-          className="font-display text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
-          style={{ textShadow: "0 0 12px rgba(0,212,170,0.2)" }}
-        >
-          100x cheaper
-        </span>
-        <span className="text-sm text-[#00D4AA]/50">
-          than traditional ICU monitoring
-        </span>
-      </motion.div>
-    </motion.div>
+      <SpecItem progress={progress} range={[0.64, 0.69]}>
+        <div className="flex items-center gap-3">
+          <div className="h-px w-8 bg-[#00D4AA]/30 md:w-16" />
+          <div
+            className="h-1.5 w-1.5 rounded-full bg-[#00D4AA]"
+            style={{ boxShadow: "0 0 6px rgba(0,212,170,0.5)" }}
+          />
+          <span
+            className="font-display text-xl font-semibold tracking-tight text-[#00D4AA] md:text-2xl"
+            style={{ textShadow: "0 0 12px rgba(0,212,170,0.2)" }}
+          >
+            100x cheaper
+          </span>
+          <span className="text-sm text-[#00D4AA]/50">
+            than traditional ICU monitoring
+          </span>
+        </div>
+      </SpecItem>
+    </div>
   );
 }
 
