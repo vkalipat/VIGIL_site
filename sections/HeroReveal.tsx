@@ -69,7 +69,7 @@ const specItem = {
     opacity: 1,
     x: 0,
     visibility: "visible" as const,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
 };
 
