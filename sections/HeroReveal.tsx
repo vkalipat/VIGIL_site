@@ -64,15 +64,20 @@ function WordReveal({
 
 /* ── Specs section — triggers stagger at scroll threshold ─────── */
 const specItem = {
-  hidden: { opacity: 0, x: -60 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  hidden: { opacity: 0, x: -60, visibility: "hidden" as const },
+  show: {
+    opacity: 1,
+    x: 0,
+    visibility: "visible" as const,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
 };
 
 function SpecsSection({ progress }: { progress: MotionValue<number> }) {
   const [show, setShow] = useState(false);
 
   useMotionValueEvent(progress, "change", (v) => {
-    if (v > 0.68 && !show) setShow(true);
+    if (v > 0.58 && !show) setShow(true);
   });
 
   return (
