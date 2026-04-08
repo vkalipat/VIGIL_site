@@ -72,7 +72,7 @@ function SpecsSection({ progress }: { progress: MotionValue<number> }) {
   const [show, setShow] = useState(false);
 
   useMotionValueEvent(progress, "change", (v) => {
-    if (v > 0.56 && !show) setShow(true);
+    if (v > 0.68 && !show) setShow(true);
   });
 
   return (
