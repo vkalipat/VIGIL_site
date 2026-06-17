@@ -28,7 +28,7 @@ const specs = [
     category: 'Design',
     items: [
       { name: 'Weight', value: '<45g' },
-      { name: 'PCB', value: '2-layer flex, 185mm \u00d7 35mm' },
+      { name: 'PCB', value: '4-layer rigid, 185mm \u00d7 35mm' },
       { name: 'Housing', value: 'Medical-grade silicone' },
       { name: 'SoC', value: 'Nordic nRF52840' },
     ],

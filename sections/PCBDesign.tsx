@@ -18,9 +18,9 @@ import {
 
 /* ─── PCB Overview Specs ─── */
 const pcbSpecs = [
-  { icon: Layers, label: 'Layers', value: '2-layer flex' },
+  { icon: Layers, label: 'Layers', value: '4-layer rigid' },
   { icon: Ruler, label: 'Dimensions', value: '185mm × 35mm' },
-  { icon: CircuitBoard, label: 'Thickness', value: '0.11mm' },
+  { icon: CircuitBoard, label: 'Thickness', value: '1.6mm' },
   { icon: Cpu, label: 'Components', value: '22 total' },
 ]
 
@@ -231,11 +231,11 @@ export default function PCBDesign() {
             Hardware Design
           </p>
           <h2 className="text-3xl md:text-5xl font-bold leading-[1.15] tracking-tight text-[#FAFAFA]">
-            22 components on a 0.11mm flex PCB
+            22 components on a 4-layer rigid PCB
           </h2>
           <p className="text-lg md:text-xl leading-relaxed text-zinc-400 max-w-3xl mx-auto">
-            A 2-layer flexible circuit conforms to the forehead curvature while
-            keeping the full system under 45g. Open-source hardware under CERN OHL v2.
+            A compact 4-layer rigid circuit integrates the full sensing and compute
+            stack while keeping the system under 45g. Open-source hardware under CERN OHL v2.
           </p>
         </motion.div>
 

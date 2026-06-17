@@ -55,9 +55,9 @@ const cards: ValidationCard[] = [
     id: "hardware",
     icon: FileText,
     label: "Hardware & BOM",
-    summary: "2-layer flex PCB, 22 components, all parts JLCPCB-verified",
+    summary: "4-layer rigid PCB, 22 components, all parts JLCPCB-verified",
     details:
-      "Complete PCB layout designed in KiCad for a 2-layer flex substrate (185mm × 35mm, 0.11mm thick). All 16 unique parts sourced and verified through JLCPCB's component matching system with 89% routing completion on initial autorouter pass. Power budget analysis confirms 1.00 mA total draw with 400 mAh LiPo providing 16.7 days of continuous operation.",
+      "Complete PCB layout designed in KiCad for a 4-layer rigid board (185mm × 35mm, 1.6mm thick). All 16 unique parts sourced and verified through JLCPCB's component matching system with 89% routing completion on initial autorouter pass. Power budget analysis confirms 1.00 mA total draw with 400 mAh LiPo providing 16.7 days of continuous operation.",
     figures: [
       {
         src: "/images/figures/pcb-layout.png",

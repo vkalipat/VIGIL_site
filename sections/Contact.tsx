@@ -13,7 +13,7 @@ const item = {
   },
 };
 
-const INQUIRY_EMAIL = "support@vigilhealth.us";
+const INQUIRY_EMAIL = "info@vigilsystems.site";
 
 const interests = [
   "Investment",

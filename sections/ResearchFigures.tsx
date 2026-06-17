@@ -204,7 +204,7 @@ export default function ResearchFigures() {
         <FigureSection
           label="Figure 6"
           title="PCB Hardware Design"
-          description="Complete PCB layout in KiCad for the 2-layer flex board (185mm × 35mm), rear copper layer routing, board specifications (22 components, 85 pins), and JLCPCB BOM verification with all 16 unique parts matched and confirmed."
+          description="Complete PCB layout in KiCad for the 4-layer rigid board (185mm × 35mm), rear copper layer routing, board specifications (22 components, 85 pins), and JLCPCB BOM verification with all 16 unique parts matched and confirmed."
           figureSrc="/images/figures/fig-008.jpg"
           figureAlt="PCB layout, specifications, and BOM verification"
           caption="Fig. 6 — NYX v1.0 hardware design: (A) PCB layout, (B) rear copper, (C) board specs, (D) BOM verification."
