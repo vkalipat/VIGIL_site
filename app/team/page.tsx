@@ -5,7 +5,7 @@ import Contact from "@/sections/Contact";
 export const metadata: Metadata = {
   title: "Team & Contact — VIGIL Health",
   description:
-    "Meet the team behind VIGIL. Based in Cumming, GA. Request a pilot deployment or get in touch.",
+    "Meet the team behind VIGIL. Based in Cumming, GA. Investor and partnership inquiries welcome — get in touch.",
 };
 
 export default function TeamPage() {

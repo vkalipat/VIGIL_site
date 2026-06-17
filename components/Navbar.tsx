@@ -85,7 +85,7 @@ export default function Navbar() {
               href="/team#contact"
               className="hidden sm:inline-flex items-center relative overflow-hidden bg-[#00D4AA] text-[#0A0A0F] font-semibold px-6 py-2.5 rounded-lg hover:shadow-[0_0_20px_rgba(0,212,170,0.3)] hover:brightness-110 transition-all duration-300 text-sm"
             >
-              <span className="relative z-10">Request a Pilot</span>
+              <span className="relative z-10">Register Interest</span>
               <motion.span
                 className="absolute inset-0 z-0"
                 initial={{ x: "-100%", opacity: 0 }}
@@ -200,7 +200,7 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className="block w-full text-center bg-[#00D4AA] text-[#0A0A0F] font-semibold px-6 py-3 rounded-xl text-sm"
                 >
-                  Request a Pilot
+                  Register Interest
                 </Link>
               </motion.div>
             </motion.div>

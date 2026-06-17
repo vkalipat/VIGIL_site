@@ -371,7 +371,7 @@ export default function HeroReveal() {
                 href="/team#contact"
                 className="rounded-full bg-[#00D4AA] px-5 py-2.5 text-sm font-semibold text-[#0A0A0F] transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_24px_rgba(0,212,170,0.25)]"
               >
-                Request a Pilot
+                Register Interest
               </HoverGlowButton>
             </MagneticButton>
             <MagneticButton>
